@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">FruitVegeMIS</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="btn_login">登陆</string>
+    <string name="btn_register">注册</string>
     <string name="action_settings">Settings</string>
 
 </resources>
