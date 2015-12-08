@@ -5,7 +5,7 @@ import android.app.Application;
 public class BaseApplication extends Application {
 
 	public static BaseApplication mBaseApplication;
-	public static AppInterface mAppInterface;
+	public AppInterface mAppInterface;
 
 	private boolean isLogin = false;
 
