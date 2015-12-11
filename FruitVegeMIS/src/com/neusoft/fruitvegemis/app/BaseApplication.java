@@ -37,5 +37,11 @@ public class BaseApplication extends Application {
 		super.onCreate();
 		mBaseApplication = this;
 		mAppInterface = new AppInterface(this);
+		initRuntime();
+	}
+
+	public void initRuntime() {
+		// 创建数据库
+		mAppInterface.getManager(AppInterface.FRUITVG);
 	}
 }
