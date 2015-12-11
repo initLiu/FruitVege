@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
-        android:text="left" />
+        android:text="left"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/title_btn_right"
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="left" />
+        android:text="left"
+        android:visibility="gone" />
 
 </RelativeLayout>

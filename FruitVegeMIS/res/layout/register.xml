@@ -3,9 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <include
-        android:id="@+id/title_bar"
         layout="@layout/common_title_bar" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <com.neusoft.fruitvegemis.widget.ClearableEditText
+            android:id="@+id/register_uin"
+            style="@style/TextStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="150dp"
+            android:background="@drawable/input"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true" />
+
+        <com.neusoft.fruitvegemis.widget.ClearableEditText
+            android:id="@+id/register_password"
+            style="@style/TextStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/register_uin"
+            android:layout_margin="10dp"
+            android:background="@drawable/input"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:password="true"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/register_rg"
+            style="@style/TextStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/register_password"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_drawable"
+            android:gravity="center"
+            android:text="@string/btn_register" />
+    </RelativeLayout>
 
 </LinearLayout>
