@@ -2,6 +2,9 @@ package com.neusoft.fruitvegemis.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.util.Log;
+
+import com.neusoft.fruitvegemis.utils.AppConstants;
 
 public class SQLiteOpenHelper {
 	private android.database.sqlite.SQLiteOpenHelper helper;
@@ -19,7 +22,7 @@ public class SQLiteOpenHelper {
 		}
 		return dbW;
 	}
-	
+
 	public synchronized SQLiteDatabase getReadableDatabase() {
 		android.database.sqlite.SQLiteDatabase db = helper
 				.getReadableDatabase();
@@ -40,7 +43,11 @@ public class SQLiteOpenHelper {
 
 		@Override
 		public void onCreate(android.database.sqlite.SQLiteDatabase db) {
-			// TODO Auto-generated method stub
+			String sql = "create table "
+					+ AppConstants.TBUin.name
+					+ "(_id INTERGER AUTOINCREM,uname TEXT PRIMARY KEY,password TEXT NOT NULL,type INTERGER NOT NULL)";
+			 Log.e("Test", "SQLiteOpenHelperImpl sql=" + sql);
+			db.execSQL(sql);
 
 		}
 
