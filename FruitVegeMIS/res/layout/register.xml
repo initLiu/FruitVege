@@ -6,71 +6,80 @@
 
     <include layout="@layout/common_title_bar" />
 
-    <RelativeLayout
+    <com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout
+        android:id="@+id/regist_root"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <com.neusoft.fruitvegemis.widget.ClearableEditText
-            android:id="@+id/register_uin"
-            style="@style/TextStyle"
+        <RelativeLayout
+            android:id="@+id/regist_scroll"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="110dp"
-            android:background="@drawable/input"
-            android:hint="@string/uin_hint"
-            android:inputType="number"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true" />
+            android:layout_height="wrap_content" >
 
-        <com.neusoft.fruitvegemis.widget.ClearableEditText
-            android:id="@+id/register_password"
-            style="@style/TextStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/register_uin"
-            android:layout_margin="10dp"
-            android:background="@drawable/input"
-            android:digits="@string/passworType"
-            android:inputType="textPassword"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true" />
+            <com.neusoft.fruitvegemis.widget.ClearableEditText
+                android:id="@+id/register_uin"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="110dp"
+                android:background="@drawable/input"
+                android:hint="@string/uin_hint"
+                android:inputType="number"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true" />
 
-        <RadioGroup
-            android:id="@+id/register_uintype"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/register_password"
-            android:layout_margin="10dp"
-            android:orientation="horizontal" >
+            <com.neusoft.fruitvegemis.widget.ClearableEditText
+                android:id="@+id/register_password"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/register_uin"
+                android:layout_margin="10dp"
+                android:background="@drawable/input"
+                android:digits="@string/passworType"
+                android:inputType="textPassword"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true" />
 
-            <RadioButton
-                android:id="@+id/register_typeBuyer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/buyer"
-                android:checked="true" />
+            <RadioGroup
+                android:id="@+id/register_uintype"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/register_password"
+                android:layout_margin="10dp"
+                android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/register_typeSeller"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/seller" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/register_typeBuyer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/buyer" />
 
-        <Button
-            android:id="@+id/register_rg"
-            style="@style/TextStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/register_uintype"
-            android:layout_margin="10dp"
-            android:background="@drawable/btn_drawable"
-            android:gravity="center"
-            android:text="@string/btn_register" />
-    </RelativeLayout>
+                <RadioButton
+                    android:id="@+id/register_typeSeller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/register_rg"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/register_uintype"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_drawable"
+                android:gravity="center"
+                android:text="@string/btn_register" />
+        </RelativeLayout>
+    </com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout>
 
 </LinearLayout>

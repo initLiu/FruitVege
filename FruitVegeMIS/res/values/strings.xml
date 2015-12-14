@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FruitVegeMIS</string>
+    <string name="app_name">果蔬管理系统</string>
     <string name="btn_login">登录</string>
     <string name="btn_register">注册</string>
     <string name="action_settings">Settings</string>
@@ -10,5 +10,10 @@
     <string name="uin_hint">请输入手机号</string>
     <string name="buyer">买家</string>
 	<string name="seller">卖家</string>
+	<string name="open_drawer">打开Drawer</string>
+	<string name="close_drawer">关闭Drawer</string>
+	<string name="draweritem_main">主页</string>
+	<string name="draweritem_order">我的订单</string>
+	<string name="draweritem_bill">我的账单</string>
 </resources>
 

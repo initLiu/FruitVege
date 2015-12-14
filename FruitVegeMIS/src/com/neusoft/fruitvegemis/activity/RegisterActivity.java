@@ -10,11 +10,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,35 +26,36 @@ import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
 import com.neusoft.fruitvegemis.utils.DialogUtils;
 import com.neusoft.fruitvegemis.utils.ObserverMessage;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout.onSizeChangedListenner;
 
 public class RegisterActivity extends BaseActivity implements OnClickListener,
-		Observer {
+		onSizeChangedListenner, Observer {
 
 	private EditText unameText, pwdText;
 	private Button registBtn;
 	private TextView titleLeftText;
 	private RadioButton buyerRBtn, sellerRBtn;
 	private Dialog loadingDialog;
+	private InputMethodRelativeLayout rootLayout;
+	private RelativeLayout registScrollLayout;
 	public static final int REGISTER_USER_SUCCESS = 0;
 	public static final int REGISTER_USER_FAIL = 1;
+	public static final int CREATE_REGISTER_LOADING_DIALOG = 1;
 	public Handler uiHandler = new Handler(Looper.getMainLooper()) {
 
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case REGISTER_USER_SUCCESS:
-				if (loadingDialog != null && loadingDialog.isShowing()) {
-					loadingDialog.dismiss();
-				}
+				dismissDialog(CREATE_REGISTER_LOADING_DIALOG);
 				Intent intent = new Intent(RegisterActivity.this,
 						MainActivity.class);
 				startActivity(intent);
 				RegisterActivity.this.finish();
 				break;
 			case REGISTER_USER_FAIL:
-				if (loadingDialog != null && loadingDialog.isShowing()) {
-					loadingDialog.dismiss();
-				}
+				dismissDialog(CREATE_REGISTER_LOADING_DIALOG);
 				String reason = (String) msg.obj;
 				if (!TextUtils.isEmpty(reason)) {
 					Toast.makeText(RegisterActivity.this, reason,
@@ -89,6 +92,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 		titleLeftText.setOnClickListener(this);
 		buyerRBtn = (RadioButton) findViewById(R.id.register_typeBuyer);
 		sellerRBtn = (RadioButton) findViewById(R.id.register_typeSeller);
+		rootLayout = (InputMethodRelativeLayout) findViewById(R.id.regist_root);
+		registScrollLayout = (RelativeLayout) findViewById(R.id.regist_scroll);
+		rootLayout.setOnSizeChangeListener(this);
 	}
 
 	private void initTitleBar() {
@@ -100,13 +106,13 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.register_rg:
-			loadingDialog = DialogUtils.creatLoadingDialog(this);
-			loadingDialog.show();
+			showDialog(CREATE_REGISTER_LOADING_DIALOG);
 			String uin = unameText.getText().toString();
 			String pwd = pwdText.getText().toString();
 			int type = buyerRBtn.isChecked() ? 0 : 1;
 			if (TextUtils.isEmpty(uin) || TextUtils.isEmpty(pwd)) {
-				Toast.makeText(this, "ÓÃ»§Ãû»òÃÜÂë²»ÄÜ¿Õ", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë²»ï¿½Ü¿ï¿½", Toast.LENGTH_SHORT)
+						.show();
 				break;
 			}
 			fDbManager.registerUser(uin, pwd, type);
@@ -144,15 +150,46 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 	}
 
 	@Override
-	public void finish() {
-		if (loadingDialog != null && loadingDialog.isShowing()) {
-			loadingDialog.dismiss();
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		switch (id) {
+		case CREATE_REGISTER_LOADING_DIALOG:
+			dialog = DialogUtils.creatLoadingDialog(this);
+			break;
+
+		default:
+			break;
 		}
-		super.finish();
+		return dialog;
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+
+	@Override
+	public void onSizeChange(boolean isOpen, int preH, int curH) {
+		Log.e("Test", "LoginActivity onSizeChange isOpen:" + isOpen + ",preH="
+				+ preH + ",curH=" + curH);
+		if (isOpen) {// ä¸ºäº†æ˜¾ç¤ºç™»å½•æŒ‰é’®æˆ‘uiå‘ä¸ŠæŽ¨ä¸€ä¸‹
+			int[] location = new int[2];
+			registBtn.getLocationInWindow(location);
+			int loginBtnY = location[1];
+			rootLayout.getLocationInWindow(location);
+			int rootY = location[1];
+			int paddingY = loginBtnY - rootY + registBtn.getHeight() - curH;
+			Log.e("Test", "LoginActivity onSizeChange loginBtnY=" + loginBtnY
+					+ ",rootY=" + rootY + ",paddingY=" + paddingY);
+			if (paddingY > 0) {
+				registScrollLayout.setPadding(
+						registScrollLayout.getPaddingLeft(),
+						registScrollLayout.getPaddingTop() - paddingY,
+						registScrollLayout.getPaddingRight(),
+						registScrollLayout.getPaddingBottom());
+			}
+		} else {
+			registScrollLayout.setPadding(0, 0, 0, 0);
+		}
 	}
 }

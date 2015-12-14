@@ -1,11 +1,11 @@
 package com.neusoft.fruitvegemis.activity;
 
-import com.neusoft.fruitvegemis.R;
-import com.neusoft.fruitvegemis.app.BaseApplication;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.app.BaseApplication;
 
 public class BaseActivity extends Activity {
 

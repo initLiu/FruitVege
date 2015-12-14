@@ -5,19 +5,24 @@ import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout.onSizeChangedListenner;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends BaseActivity implements OnClickListener {
+public class LoginActivity extends BaseActivity implements OnClickListener,
+		onSizeChangedListenner {
 
 	private EditText unameText;
 	private EditText pwdText;
@@ -25,6 +30,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private TextView registText;
 	private RadioButton buyerRBtn;
 	private FruitVgDBManager fDbManager;
+	private InputMethodRelativeLayout rootLayout;
+	private RelativeLayout loginScrollLayaout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +48,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		loginBtn = (Button) findViewById(R.id.login);
 		registText = (TextView) findViewById(R.id.register);
 		buyerRBtn = (RadioButton) findViewById(R.id.typeBuyer);
+		rootLayout = (InputMethodRelativeLayout) findViewById(R.id.login_root);
+		loginScrollLayaout = (RelativeLayout) findViewById(R.id.login_scorll);
 		loginBtn.setOnClickListener(this);
 		registText.setOnClickListener(this);
+		rootLayout.setOnSizeChangeListener(this);
 	}
 
 	@Override
@@ -54,7 +64,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		case R.id.register:
 			Intent intent = new Intent(this, RegisterActivity.class);
 			startActivity(intent);
-			finish();
 			break;
 		default:
 			break;
@@ -66,7 +75,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		String pwd = pwdText.getText().toString();
 		int type = buyerRBtn.isChecked() ? 0 : 1;
 		if (TextUtils.isEmpty(uin) || TextUtils.isEmpty(pwd)) {
-			Toast.makeText(this, "ÓÃ»§Ãû»òÃÜÂë²»ÄÜÎª¿Õ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë²»ï¿½ï¿½Îªï¿½ï¿½", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		User user = new User(uin, pwd, type);
@@ -75,7 +84,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			startActivity(intent);
 			finish();
 		} else {
-			Toast.makeText(this, "ÓÃ»§Ãû»òÃÜÂë²»ÕýÈ·", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë²»ï¿½ï¿½È·", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -83,5 +92,32 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	public void onBackPressed() {
 		finish();
 		System.exit(0);
+	}
+
+	@Override
+	public void onSizeChange(boolean isOpen, int preH, int curH) {
+		Log.e("Test", "LoginActivity onSizeChange isOpen:" + isOpen + ",preH="
+				+ preH + ",curH=" + curH);
+		if (isOpen) {// ä¸ºäº†æ˜¾ç¤ºç™»å½•æŒ‰é’®æˆ‘uiå‘ä¸ŠæŽ¨ä¸€ä¸‹
+			int[] location = new int[2];
+			loginBtn.getLocationInWindow(location);
+			int loginBtnY = location[1];
+			rootLayout.getLocationInWindow(location);
+			int rootY = location[1];
+			int paddingY = loginBtnY - rootY + loginBtn.getHeight() - curH;
+			Log.e("Test", "LoginActivity onSizeChange loginBtnY=" + loginBtnY
+					+ ",rootY=" + rootY + ",paddingY=" + paddingY);
+			if (paddingY > 0) {
+				loginScrollLayaout.setPadding(
+						loginScrollLayaout.getPaddingLeft(),
+						loginScrollLayaout.getPaddingTop() - paddingY,
+						loginScrollLayaout.getPaddingRight(),
+						loginScrollLayaout.getPaddingBottom());
+				registText.setVisibility(View.GONE);
+			}
+		} else {
+			loginScrollLayaout.setPadding(0, 0, 0, 0);
+			registText.setVisibility(View.VISIBLE);
+		}
 	}
 }

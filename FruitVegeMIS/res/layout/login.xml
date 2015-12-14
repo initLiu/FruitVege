@@ -1,81 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:fitsSystemWindows="true" >
 
-    <com.neusoft.fruitvegemis.widget.ClearableEditText
-        android:id="@+id/uin"
-        style="@style/TextStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="150dp"
-        android:background="@drawable/input"
-        android:hint="@string/uin_hint"
-        android:inputType="number"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:singleLine="true" />
+    <com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout
+        android:id="@+id/login_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <com.neusoft.fruitvegemis.widget.ClearableEditText
-        android:id="@+id/password"
-        style="@style/TextStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/uin"
-        android:layout_margin="10dp"
-        android:background="@drawable/input"
-        android:digits="@string/passworType"
-        android:inputType="textPassword"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:singleLine="true" />
+        <RelativeLayout
+            android:id="@+id/login_scorll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-    <RadioGroup
-        android:id="@+id/uintype"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/password"
-        android:layout_margin="10dp"
-        android:orientation="horizontal" >
+            <com.neusoft.fruitvegemis.widget.ClearableEditText
+                android:id="@+id/uin"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="150dp"
+                android:background="@drawable/input"
+                android:hint="@string/uin_hint"
+                android:inputType="number"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true" />
 
-        <RadioButton
-            android:id="@+id/typeBuyer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/buyer"
-            android:checked="true" />
+            <com.neusoft.fruitvegemis.widget.ClearableEditText
+                android:id="@+id/password"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/uin"
+                android:layout_margin="10dp"
+                android:background="@drawable/input"
+                android:digits="@string/passworType"
+                android:inputType="textPassword"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true" />
 
-        <RadioButton
-            android:id="@+id/typeSeller"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/seller" />
-    </RadioGroup>
+            <RadioGroup
+                android:id="@+id/uintype"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/password"
+                android:layout_margin="10dp"
+                android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/login"
-        style="@style/TextStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/uintype"
-        android:layout_margin="10dp"
-        android:background="@drawable/btn_drawable"
-        android:gravity="center"
-        android:text="@string/btn_login" />
+                <RadioButton
+                    android:id="@+id/typeBuyer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/buyer" />
 
-    <TextView
-        android:id="@+id/register"
-        style="@style/TextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:editable="false"
-        android:paddingBottom="10dp"
-        android:paddingRight="10dp"
-        android:text="@string/btn_register" />
+                <RadioButton
+                    android:id="@+id/typeSeller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller" />
+            </RadioGroup>
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/login"
+                style="@style/TextStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/uintype"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_drawable"
+                android:gravity="center"
+                android:text="@string/btn_login" />
+
+            <TextView
+                android:id="@+id/register"
+                style="@style/TextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:editable="false"
+                android:paddingBottom="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/btn_register" />
+        </RelativeLayout>
+    </com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout>
+
+</FrameLayout>

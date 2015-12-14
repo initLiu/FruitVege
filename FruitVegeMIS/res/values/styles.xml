@@ -17,7 +17,10 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="BaseTheme" parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="BaseTheme" parent="@android:style/Theme.Holo.Light">
+    </style>
+    <style name="BaseThemeNoActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowNoTitle">true</item>
     </style>
     
     <style name="TextStyle">
