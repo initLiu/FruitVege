@@ -1,19 +1,28 @@
 package com.neusoft.fruitvegemis.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.adapter.DrawerAdapter;
 
 public class MainActivity extends BaseActivity {
 
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private DrawerAdapter mAdapter;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private static final int[] drawerItems = new int[] {
 			R.string.draweritem_main, R.string.draweritem_order,
@@ -23,16 +32,43 @@ public class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		initUI();
+
 		getActionBar().show();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setDisplayShowHomeEnabled(true);
+
+		initUI();
+		initData();
 	}
 
 	@Override
 	public void setTitle(CharSequence title) {
 		getActionBar().setTitle(title);
+	}
+
+	private void initData() {
+		List<String> items = new ArrayList<>();
+		for (int id : drawerItems) {
+			items.add(getResources().getString(id));
+		}
+		mAdapter = new DrawerAdapter(this);
+		mAdapter.setData(items);
+		mDrawerList.setAdapter(mAdapter);
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+	}
+
+	private class DrawerItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			setSelectItem();
+		}
+	}
+
+	private void setSelectItem() {
+
 	}
 
 	private void initUI() {
@@ -78,7 +114,19 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@Override
-	public void onBackPressed() {
-		moveTaskToBack(true);
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+				mDrawerLayout.closeDrawer(Gravity.START);
+			} else {
+				moveTaskToBack(true);
+			}
+			return true;
+
+		default:
+			break;
+		}
+		return false;
 	}
 }
