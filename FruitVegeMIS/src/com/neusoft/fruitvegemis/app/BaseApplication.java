@@ -16,6 +16,7 @@ public class BaseApplication extends Application {
 	private final List<WeakReference<BaseActivity>> mActivitys = new ArrayList<WeakReference<BaseActivity>>();
 
 	private boolean isLogin = false;
+	private User currentAccount;
 
 	public static BaseApplication getBaseApplication() {
 		return mBaseApplication;
@@ -42,6 +43,15 @@ public class BaseApplication extends Application {
 
 	public void setLogin(boolean login) {
 		isLogin = login;
+		setCurrentAccount(null);
+	}
+
+	public void setCurrentAccount(User user) {
+		this.currentAccount = user;
+	}
+
+	public User getCurrentAccount() {
+		return currentAccount;
 	}
 
 	@Override

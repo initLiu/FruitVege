@@ -75,7 +75,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
 		String pwd = pwdText.getText().toString();
 		int type = buyerRBtn.isChecked() ? 0 : 1;
 		if (TextUtils.isEmpty(uin) || TextUtils.isEmpty(pwd)) {
-			Toast.makeText(this, "�û�������벻��Ϊ��", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "用户名密码不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		User user = new User(uin, pwd, type);
@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
 			startActivity(intent);
 			finish();
 		} else {
-			Toast.makeText(this, "�û�������벻��ȷ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "登录失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 

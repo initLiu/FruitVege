@@ -3,20 +3,25 @@ package com.neusoft.fruitvegemis.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.neusoft.fruitvegemis.R;
 import com.neusoft.fruitvegemis.adapter.DrawerAdapter;
+import com.neusoft.fruitvegemis.app.BaseApplication;
+import com.neusoft.fruitvegemis.app.User;
 
 public class MainActivity extends BaseActivity {
 
@@ -24,9 +29,14 @@ public class MainActivity extends BaseActivity {
 	private ListView mDrawerList;
 	private DrawerAdapter mAdapter;
 	private ActionBarDrawerToggle mDrawerToggle;
-	private static final int[] drawerItems = new int[] {
+	private static final int[] drawerItems_buyer = new int[] {
 			R.string.draweritem_main, R.string.draweritem_order,
 			R.string.draweritem_bill };
+
+	private static final int[] drawerItems_seller = new int[] {
+			R.string.draweritem_main, R.string.draweritem_bill };
+
+	private User currentAccout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +58,27 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void initData() {
+		currentAccout = BaseApplication.mBaseApplication.getCurrentAccount();
 		List<String> items = new ArrayList<>();
-		for (int id : drawerItems) {
-			items.add(getResources().getString(id));
+		if (currentAccout.getType() == 0) {
+			for (int id : drawerItems_buyer) {
+				items.add(getResources().getString(id));
+			}
+		} else {
+			for (int id : drawerItems_seller) {
+				items.add(getResources().getString(id));
+			}
 		}
+
 		mAdapter = new DrawerAdapter(this);
 		mAdapter.setData(items);
 		mDrawerList.setAdapter(mAdapter);
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+		Object obj = mAdapter.getItem(0);
+		String title = obj != null ? (String) obj
+				: getString(R.string.app_name);
+		setSelectItem(title, 0);
 	}
 
 	private class DrawerItemClickListener implements OnItemClickListener {
@@ -63,12 +86,65 @@ public class MainActivity extends BaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			setSelectItem();
+			setSelectItem((String) view.getTag(), position);
 		}
 	}
 
-	private void setSelectItem() {
+	private void setSelectItem(String title, int position) {
+		if (currentAccout.getType() == 0) {
+			setSelectItemBuyer(title, position);
+		} else {
+			setSelectItemSeller(title, position);
+		}
+	}
 
+	private void setSelectItemBuyer(String title, int position) {
+		mDrawerList.setItemChecked(position, true);
+		setTitle(title);
+		switch (position) {
+		case 0:
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, MainFragment.getInstance(),
+							MainFragment.TAG).commitAllowingStateLoss();
+			break;
+		case 1:
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, OrderFragment.getInstance(),
+							MainFragment.TAG).commitAllowingStateLoss();
+		case 2:
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, BillFragment.getInstance(),
+							MainFragment.TAG).commitAllowingStateLoss();
+			break;
+		default:
+			break;
+		}
+		mDrawerLayout.closeDrawer(Gravity.START);
+	}
+
+	private void setSelectItemSeller(String title, int position) {
+		mDrawerList.setItemChecked(position, true);
+		setTitle(title);
+		switch (position) {
+		case 0:
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, MainFragment.getInstance(),
+							MainFragment.TAG).commitAllowingStateLoss();
+			break;
+		case 1:
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, BillFragment.getInstance(),
+							MainFragment.TAG).commitAllowingStateLoss();
+			break;
+		default:
+			break;
+		}
+		mDrawerLayout.closeDrawer(Gravity.START);
 	}
 
 	private void initUI() {
@@ -89,6 +165,23 @@ public class MainActivity extends BaseActivity {
 				invalidateOptionsMenu();
 			}
 
+			@Override
+			public boolean onOptionsItemSelected(MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.action_exit:
+					BaseApplication.mBaseApplication.setLogin(false);
+					Intent intent = new Intent(MainActivity.this,
+							LoginActivity.class);
+					MainActivity.this.startActivity(intent);
+					MainActivity.this.finish();
+					break;
+
+				default:
+					break;
+				}
+				return super.onOptionsItemSelected(item);
+			}
+
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
@@ -103,6 +196,13 @@ public class MainActivity extends BaseActivity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return true;
 	}
 
 	@Override
@@ -123,7 +223,6 @@ public class MainActivity extends BaseActivity {
 				moveTaskToBack(true);
 			}
 			return true;
-
 		default:
 			break;
 		}

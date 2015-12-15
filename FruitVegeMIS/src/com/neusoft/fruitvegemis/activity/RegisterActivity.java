@@ -111,7 +111,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 			String pwd = pwdText.getText().toString();
 			int type = buyerRBtn.isChecked() ? 0 : 1;
 			if (TextUtils.isEmpty(uin) || TextUtils.isEmpty(pwd)) {
-				Toast.makeText(this, "�û�������벻�ܿ�", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "用户名密码不能为空", Toast.LENGTH_SHORT)
 						.show();
 				break;
 			}

@@ -48,7 +48,9 @@ public class DrawerAdapter extends BaseAdapter {
 		}
 		TextView drawerItem = (TextView) convertView
 				.findViewById(R.id.drawer_item);
-		drawerItem.setText(getItem(position).toString());
+		String content = (String) getItem(position);
+		drawerItem.setText(content);
+		convertView.setTag(content);
 		return convertView;
 	}
 }

@@ -2,7 +2,6 @@ package com.neusoft.fruitvegemis.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.util.Log;
 
 import com.neusoft.fruitvegemis.utils.AppConstants;
 
@@ -32,6 +31,15 @@ public class SQLiteOpenHelper {
 		return dbR;
 	}
 
+	public synchronized void close() {
+		if (dbR != null) {
+			dbR.close();
+		}
+		if (dbW != null) {
+			dbW.close();
+		}
+	}
+
 	private static class SQLiteOpenHelperImpl extends
 			android.database.sqlite.SQLiteOpenHelper {
 
@@ -44,9 +52,31 @@ public class SQLiteOpenHelper {
 		@Override
 		public void onCreate(android.database.sqlite.SQLiteDatabase db) {
 			String sql = "create table "
-					+ AppConstants.TBUin.name
+					+ AppConstants.TBUser.name
 					+ "(_id INTERGER AUTOINCREM,uname TEXT PRIMARY KEY,password TEXT NOT NULL,type INTERGER NOT NULL)";
-			 Log.e("Test", "SQLiteOpenHelperImpl sql=" + sql);
+			db.execSQL(sql);
+
+			sql = "create table " + AppConstants.TBUOrder.name + "("
+					+ AppConstants.TBUOrder.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBUOrder.Cloum.uname + " TEXT NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.type + " INTERGER NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.oid + " TEXT NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.ostate
+					+ " INTERGER NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.oprice + " REAL NOT NULL)";
+			db.execSQL(sql);
+
+			sql = "create table " + AppConstants.TBOrder.name + "("
+					+ AppConstants.TBOrder.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBOrder.Cloum.oid + " TEXT NOT NULL,"
+					+ AppConstants.TBOrder.Cloum.gname + " TEXT NOT NULL,"
+					+ AppConstants.TBOrder.Cloum.gprice + " REAL NOT NULL)";
+			db.execSQL(sql);
+
+			sql = "create table " + AppConstants.TBSGoods.name + "("
+					+ AppConstants.TBSGoods.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBSGoods.Cloum.sname + " TEXT NOT NULL,"
+					+ AppConstants.TBSGoods.Cloum.gprice + " REAL NOT NULL)";
 			db.execSQL(sql);
 
 		}
@@ -55,7 +85,6 @@ public class SQLiteOpenHelper {
 		public void onUpgrade(android.database.sqlite.SQLiteDatabase db,
 				int oldVersion, int newVersion) {
 			// TODO Auto-generated method stub
-
 		}
 
 	}

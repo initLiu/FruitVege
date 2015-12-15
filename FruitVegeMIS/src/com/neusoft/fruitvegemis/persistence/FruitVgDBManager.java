@@ -9,10 +9,11 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
 import com.neusoft.fruitvegemis.manager.Manager;
 import com.neusoft.fruitvegemis.utils.AppConstants;
-import com.neusoft.fruitvegemis.utils.AppConstants.TBUin;
+import com.neusoft.fruitvegemis.utils.AppConstants.TBUser;
 import com.neusoft.fruitvegemis.utils.ObserverMessage;
 
 public class FruitVgDBManager extends Observable implements Manager {
@@ -42,17 +43,17 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	private void loadUser() {
 		Log.e(TAG, "loaduser");
-		Cursor cursor = helper.getWritableDatabase().query(
-				AppConstants.TBUin.name, null, null, null, null, null, null);
+		Cursor cursor = helper.getWritableDatabase().query(TBUser.name, null,
+				null, null, null, null, null);
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			do {
 				String uname = cursor.getString(cursor
-						.getColumnIndex(TBUin.Cloum.uname));
+						.getColumnIndex(TBUser.Cloum.uname));
 				String pwd = cursor.getString(cursor
-						.getColumnIndex(TBUin.Cloum.password));
+						.getColumnIndex(TBUser.Cloum.password));
 				int type = cursor.getInt(cursor
-						.getColumnIndex(TBUin.Cloum.type));
+						.getColumnIndex(TBUser.Cloum.type));
 				User user = new User(uname, pwd, type);
 				Log.e(TAG, "loaduser uin=" + uname);
 				synchronized (userMap) {
@@ -65,6 +66,8 @@ public class FruitVgDBManager extends Observable implements Manager {
 	public boolean login(User user) {
 		String uin = user.getUin();
 		if (userMap.containsKey(uin)) {
+			BaseApplication.mBaseApplication.setLogin(true);
+			BaseApplication.mBaseApplication.setCurrentAccount(user);
 			return userMap.get(uin).equals(user);
 		}
 		return false;
@@ -81,16 +84,20 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 				if (userMap.containsKey(uin)) {
 					message.msg = false;
-					message.extra = "ÓÃ»§ÒÑ´æÔÚ";
+					message.extra = "ç”¨æˆ·å·²å­˜åœ¨";
 				} else {
-					// 0Âô¼Ò £¬1Âô¼Ò
 					sucess = helper.getWritableDatabase().registerUser(uin,
 							pwd, type);
-					if (sucess) {
-						userMap.put(uin, new User(uin, pwd, type));
-					}
 					message.msg = sucess;
-					message.extra = "×¢²áÊ§°Ü";
+					if (sucess) {
+						BaseApplication.mBaseApplication.setLogin(true);
+						BaseApplication.mBaseApplication
+								.setCurrentAccount(new User(uin, pwd, type));
+						userMap.put(uin, new User(uin, pwd, type));
+						message.extra = "æ³¨å†ŒæˆåŠŸ";
+					} else {
+						message.extra = "æ³¨å†Œå¤±è´¥";
+					}
 				}
 				setChanged();
 				notifyObservers(message);
@@ -100,7 +107,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+		helper.close();
 	}
 }

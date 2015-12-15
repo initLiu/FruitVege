@@ -7,7 +7,7 @@ public class User {
 
 	public User(String uin, String pwd, int type) {
 		this.uin = uin;
-		this.password = pwd;
+		this.password = pwd == null ? "" : pwd;
 		this.type = type;
 	}
 
