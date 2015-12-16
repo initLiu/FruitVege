@@ -32,6 +32,7 @@ import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout.onSizeChangedLi
 public class RegisterActivity extends BaseActivity implements OnClickListener,
 		onSizeChangedListenner, Observer {
 
+	public static final String TAG = "RegisterActivity";
 	private EditText unameText, pwdText;
 	private Button registBtn;
 	private TextView titleLeftText;
@@ -48,14 +49,14 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case REGISTER_USER_SUCCESS:
-				dismissDialog(CREATE_REGISTER_LOADING_DIALOG);
+				closeDialog(CREATE_REGISTER_LOADING_DIALOG);
 				Intent intent = new Intent(RegisterActivity.this,
 						MainActivity.class);
 				startActivity(intent);
 				RegisterActivity.this.finish();
 				break;
 			case REGISTER_USER_FAIL:
-				dismissDialog(CREATE_REGISTER_LOADING_DIALOG);
+				closeDialog(CREATE_REGISTER_LOADING_DIALOG);
 				String reason = (String) msg.obj;
 				if (!TextUtils.isEmpty(reason)) {
 					Toast.makeText(RegisterActivity.this, reason,
@@ -106,15 +107,14 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.register_rg:
-			showDialog(CREATE_REGISTER_LOADING_DIALOG);
 			String uin = unameText.getText().toString();
 			String pwd = pwdText.getText().toString();
 			int type = buyerRBtn.isChecked() ? 0 : 1;
 			if (TextUtils.isEmpty(uin) || TextUtils.isEmpty(pwd)) {
-				Toast.makeText(this, "用户名密码不能为空", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(this, "用户名密码不能为空", Toast.LENGTH_SHORT).show();
 				break;
 			}
+			showDialog(CREATE_REGISTER_LOADING_DIALOG);
 			fDbManager.registerUser(uin, pwd, type);
 			break;
 		case R.id.title_btn_left:
@@ -161,6 +161,14 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 			break;
 		}
 		return dialog;
+	}
+
+	private void closeDialog(int id) {
+		try {
+			dismissDialog(id);
+		} catch (Exception e) {
+			Log.e(TAG, "close dialog error" + e.getMessage());
+		}
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity {
 
 	private void initData() {
 		currentAccout = BaseApplication.mBaseApplication.getCurrentAccount();
-		List<String> items = new ArrayList<>();
+		List<String> items = new ArrayList<String>();
 		if (currentAccout.getType() == 0) {
 			for (int id : drawerItems_buyer) {
 				items.add(getResources().getString(id));
@@ -105,7 +106,8 @@ public class MainActivity extends BaseActivity {
 		case 0:
 			getFragmentManager()
 					.beginTransaction()
-					.replace(R.id.content_frame, MainFragment.getInstance(),
+					.replace(R.id.content_frame,
+							MainFragment.getInstance(currentAccout.getType()),
 							MainFragment.TAG).commitAllowingStateLoss();
 			break;
 		case 1:
@@ -132,7 +134,8 @@ public class MainActivity extends BaseActivity {
 		case 0:
 			getFragmentManager()
 					.beginTransaction()
-					.replace(R.id.content_frame, MainFragment.getInstance(),
+					.replace(R.id.content_frame,
+							MainFragment.getInstance(currentAccout.getType()),
 							MainFragment.TAG).commitAllowingStateLoss();
 			break;
 		case 1:
@@ -174,8 +177,7 @@ public class MainActivity extends BaseActivity {
 							LoginActivity.class);
 					MainActivity.this.startActivity(intent);
 					MainActivity.this.finish();
-					break;
-
+					return true;
 				default:
 					break;
 				}

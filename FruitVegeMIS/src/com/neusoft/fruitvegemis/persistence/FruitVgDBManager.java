@@ -66,9 +66,11 @@ public class FruitVgDBManager extends Observable implements Manager {
 	public boolean login(User user) {
 		String uin = user.getUin();
 		if (userMap.containsKey(uin)) {
-			BaseApplication.mBaseApplication.setLogin(true);
-			BaseApplication.mBaseApplication.setCurrentAccount(user);
-			return userMap.get(uin).equals(user);
+			if (userMap.get(uin).equals(user)) {
+				BaseApplication.mBaseApplication.setLogin(true);
+				BaseApplication.mBaseApplication.setCurrentAccount(user);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -81,7 +83,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 				boolean sucess = false;
 				ObserverMessage message = new ObserverMessage();
 				message.msgId = ObserverMessage.REGISTERUSER;
-
 				if (userMap.containsKey(uin)) {
 					message.msg = false;
 					message.extra = "用户已存在";

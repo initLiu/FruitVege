@@ -53,28 +53,28 @@ public class SQLiteOpenHelper {
 		public void onCreate(android.database.sqlite.SQLiteDatabase db) {
 			String sql = "create table "
 					+ AppConstants.TBUser.name
-					+ "(_id INTERGER AUTOINCREM,uname TEXT PRIMARY KEY,password TEXT NOT NULL,type INTERGER NOT NULL)";
+					+ "(uname TEXT PRIMARY KEY,password TEXT NOT NULL,type INTEGER NOT NULL)";
 			db.execSQL(sql);
 
 			sql = "create table " + AppConstants.TBUOrder.name + "("
-					+ AppConstants.TBUOrder.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBUOrder.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBUOrder.Cloum.uname + " TEXT NOT NULL,"
-					+ AppConstants.TBUOrder.Cloum.type + " INTERGER NOT NULL,"
-					+ AppConstants.TBUOrder.Cloum.oid + " TEXT NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.type + " INTERER NOT NULL,"
+					+ AppConstants.TBUOrder.Cloum.oid + " TEXT,"
 					+ AppConstants.TBUOrder.Cloum.ostate
-					+ " INTERGER NOT NULL,"
-					+ AppConstants.TBUOrder.Cloum.oprice + " REAL NOT NULL)";
+					+ " INTERGER,"
+					+ AppConstants.TBUOrder.Cloum.oprice + " REAL DEFAULT 0.0)";
 			db.execSQL(sql);
 
 			sql = "create table " + AppConstants.TBOrder.name + "("
-					+ AppConstants.TBOrder.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBOrder.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBOrder.Cloum.oid + " TEXT NOT NULL,"
 					+ AppConstants.TBOrder.Cloum.gname + " TEXT NOT NULL,"
 					+ AppConstants.TBOrder.Cloum.gprice + " REAL NOT NULL)";
 			db.execSQL(sql);
 
 			sql = "create table " + AppConstants.TBSGoods.name + "("
-					+ AppConstants.TBSGoods.Cloum.id + " INTERGER AUTOINCREM,"
+					+ AppConstants.TBSGoods.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBSGoods.Cloum.sname + " TEXT NOT NULL,"
 					+ AppConstants.TBSGoods.Cloum.gprice + " REAL NOT NULL)";
 			db.execSQL(sql);

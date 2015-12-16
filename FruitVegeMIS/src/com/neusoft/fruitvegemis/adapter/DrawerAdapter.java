@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class DrawerAdapter extends BaseAdapter {
 
-	private List<String> drawerItems = new ArrayList<>();
+	private List<String> drawerItems = new ArrayList<String>();
 	private Context context;
 
 	public DrawerAdapter(Context context) {
