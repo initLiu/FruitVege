@@ -70,12 +70,15 @@ public class SQLiteOpenHelper {
 					+ AppConstants.TBOrder.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBOrder.Cloum.oid + " TEXT NOT NULL,"
 					+ AppConstants.TBOrder.Cloum.gname + " TEXT NOT NULL,"
+					+ AppConstants.TBOrder.Cloum.gpicture + " BLOB,"
 					+ AppConstants.TBOrder.Cloum.gprice + " REAL NOT NULL)";
 			db.execSQL(sql);
 
 			sql = "create table " + AppConstants.TBSGoods.name + "("
 					+ AppConstants.TBSGoods.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBSGoods.Cloum.sname + " TEXT NOT NULL,"
+					+ AppConstants.TBSGoods.Cloum.gname + " TEXT NOT NULL,"
+					+ AppConstants.TBOrder.Cloum.gpicture + " BLOB,"
 					+ AppConstants.TBSGoods.Cloum.gprice + " REAL NOT NULL)";
 			db.execSQL(sql);
 

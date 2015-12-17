@@ -16,5 +16,8 @@
 	<string name="draweritem_main">主页</string>
 	<string name="draweritem_order">我的订单</string>
 	<string name="draweritem_bill">我的账单</string>
+	<string name="goodsPrice">元/斤</string>
+	<string name="upload">上传</string>
+	<string name="cancle">取消</string>
 </resources>
 

@@ -1,21 +1,25 @@
 package com.neusoft.fruitvegemis.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.adapter.ImageAdapter;
 
 public class MainFragment extends Fragment {
 
 	public static final String TAG = "MainFragment";
 	private int mUserType;
+	private GridView mGridView;
+	private ImageAdapter mImageAdapter;
 
 	public static MainFragment getInstance(int type) {
 		MainFragment fragment = new MainFragment();
@@ -23,6 +27,29 @@ public class MainFragment extends Fragment {
 		arg.putInt("type", type);
 		fragment.setArguments(arg);
 		return fragment;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+		mUserType = getArguments().getInt("type", 0);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_main, null);
+		return view;
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		mGridView = (GridView) view.findViewById(R.id.gridview);
+		mImageAdapter = new ImageAdapter(getActivity());
+		mGridView.setAdapter(mImageAdapter);
 	}
 
 	@Override
@@ -41,29 +68,8 @@ public class MainFragment extends Fragment {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
-		mUserType = getArguments().getInt("type", 0);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		return super.onCreateView(inflater, container, savedInstanceState);
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onViewCreated(view, savedInstanceState);
-	}
-
 	private void addGoods() {
-
+		Intent intent = new Intent(getActivity(), UploadDialogActivity.class);
+		startActivity(intent);
 	}
-
 }

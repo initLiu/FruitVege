@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="22" />
 
     <application
         android:name=".app.BaseApplication"
@@ -46,6 +46,12 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.UploadDialogActivity"
+            android:theme="@style/BaseThemeActivityDialog"
+            android:configChanges="keyboardHidden|orientation|layoutDirection"
+            android:screenOrientation="portrait"
+            android:exported="false" />
     </application>
 
 </manifest>

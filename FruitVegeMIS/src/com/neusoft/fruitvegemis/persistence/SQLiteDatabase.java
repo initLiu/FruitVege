@@ -35,4 +35,8 @@ public class SQLiteDatabase {
 			e.printStackTrace();
 		}
 	}
+	
+	public void insert(String sql){
+		
+	}
 }

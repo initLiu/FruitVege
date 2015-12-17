@@ -63,6 +63,21 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
+	public void addSellerGoods(final String gname, final float price,
+			final byte[] bytes) {
+		subHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				String uname = BaseApplication.mBaseApplication
+						.getCurrentAccount().getUin();
+				String sql = "insert into " + AppConstants.TBSGoods.name + "("
+						+ uname + "," + gname + "," + bytes + "," + price + ")";
+				helper.getWritableDatabase().insert(sql);
+			}
+		});
+	}
+
 	public boolean login(User user) {
 		String uin = user.getUin();
 		if (userMap.containsKey(uin)) {

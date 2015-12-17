@@ -8,7 +8,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -92,6 +91,10 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void setSelectItem(String title, int position) {
+		int curPos = mDrawerList.getSelectedItemPosition();
+		if (curPos == position) {
+			return;
+		}
 		if (currentAccout.getType() == 0) {
 			setSelectItemBuyer(title, position);
 		} else {

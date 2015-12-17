@@ -36,6 +36,7 @@ public class AppConstants {
 			public static String id = "_id";
 			public static String oid = "oid";
 			public static String gname = "gname";
+			public static String gpicture = "gpicture";
 			public static String gprice = "gprice";
 		}
 	}
@@ -47,6 +48,7 @@ public class AppConstants {
 			public static String id = "_id";
 			public static String sname = "sname";
 			public static String gname = "gname";
+			public static String gpicture = "gpicture";
 			public static String gprice = "gprice";
 		}
 	}

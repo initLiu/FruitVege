@@ -19,8 +19,14 @@
 
     <style name="BaseTheme" parent="@android:style/Theme.Holo.Light">
     </style>
+    
     <style name="BaseThemeNoActionBar" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowNoTitle">true</item>
+    </style>
+    
+    <style name="BaseThemeActivityDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
     
     <style name="TextStyle">
