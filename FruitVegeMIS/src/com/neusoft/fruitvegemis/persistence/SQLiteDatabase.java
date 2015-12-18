@@ -1,5 +1,8 @@
 package com.neusoft.fruitvegemis.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -21,6 +24,30 @@ public class SQLiteDatabase {
 				: true;
 	}
 
+	public void beginTransaction() {
+		if (db != null) {
+			db.beginTransaction();
+		}
+	}
+
+	public void commit() {
+		db.setTransactionSuccessful();
+	}
+
+	public void end() {
+		db.endTransaction();
+	}
+
+	public Cursor rawQuery(String sql, String[] selectionArgs) {
+		Cursor cursor = null;
+		try {
+			cursor = db.rawQuery(sql, selectionArgs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cursor;
+	}
+	
 	public Cursor query(String table, String[] columns, String selection,
 			String[] selectionArgs, String groupBy, String having,
 			String orderBy) {
@@ -35,8 +62,8 @@ public class SQLiteDatabase {
 			e.printStackTrace();
 		}
 	}
-	
-	public void insert(String sql){
-		
+
+	public long insert(String table, ContentValues values) {
+		return db.insert(table, null, values);
 	}
 }

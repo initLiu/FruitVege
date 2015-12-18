@@ -1,16 +1,20 @@
 package com.neusoft.fruitvegemis.persistence;
 
+import java.util.List;
 import java.util.Observable;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.manager.FruitDBManager;
 import com.neusoft.fruitvegemis.manager.Manager;
 import com.neusoft.fruitvegemis.utils.AppConstants;
 import com.neusoft.fruitvegemis.utils.AppConstants.TBUser;
@@ -19,16 +23,22 @@ import com.neusoft.fruitvegemis.utils.ObserverMessage;
 public class FruitVgDBManager extends Observable implements Manager {
 
 	public static final String TAG = "FruitVgDBManager";
-	private SQLiteOpenHelper helper;
 
 	private HandlerThread subThandlerhread;
 	private Handler subHandler;
 	private ConcurrentHashMap<String, User> userMap = new ConcurrentHashMap<String, User>();
+	private Vector<SGoodsqueueItem> sGoodsQueue;
+	private Thread writeThread;
+	boolean isDestroy = false;
+	static final int WRITE_THREAD_TIME_INTERVAL = 1000 * 10;
+	public Object transSaveLock = new Object();
+	private AppInterface app;
+	private FruitDBManager dm;
 
-	public FruitVgDBManager(Context context) {
+	public FruitVgDBManager(AppInterface app) {
 		Log.e(TAG, "FruitVgDBManager");
-		helper = new SQLiteOpenHelper(context, AppConstants.DBNAME,
-				AppConstants.DBVERSION);
+		this.app = app;
+		sGoodsQueue = new Vector<SGoodsqueueItem>();
 		subThandlerhread = new HandlerThread("Sub-Thread");
 		subThandlerhread.start();
 		subHandler = new Handler(subThandlerhread.getLooper());
@@ -39,12 +49,87 @@ public class FruitVgDBManager extends Observable implements Manager {
 				loadUser();
 			}
 		});
+
+		writeThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (!isDestroy) {
+					synchronized (sGoodsQueue) {
+						try {
+							sGoodsQueue.wait(WRITE_THREAD_TIME_INTERVAL);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					if (!sGoodsQueue.isEmpty()) {
+						transSaveToDatabase();
+					}
+				}
+			}
+		});
+		writeThread.start();
+	}
+
+	/**
+	 * 批量存储消息到database
+	 */
+	public void transSaveToDatabase() {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		transSaveToDatabase(dm);
+	}
+
+	/**
+	 * 批量存储消息到database
+	 */
+	public void transSaveToDatabase(FruitDBManager dm) {
+		synchronized (transSaveLock) {
+			List<SGoodsqueueItem> items = null;
+			synchronized (sGoodsQueue) {
+				if (sGoodsQueue.isEmpty()) {
+					return;
+				}
+				items = (List<SGoodsqueueItem>) sGoodsQueue.clone();
+				sGoodsQueue.clear();
+			}
+			if (items != null) {
+				try {
+					int optCount = 0;
+					// 开始事物
+					dm.beginTransaction();
+					for (SGoodsqueueItem queueItem : items) {
+						++optCount;
+						String tableName = queueItem.tableName;
+						switch (queueItem.action) {
+						case BaseQueueItem.QUEUE_ITEM_ACTION_INSERT:
+							dm.insert(queueItem);
+							break;
+						default:
+							break;
+						}
+					}
+					dm.commit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					dm.end();
+				}
+			}
+		}
 	}
 
 	private void loadUser() {
 		Log.e(TAG, "loaduser");
-		Cursor cursor = helper.getWritableDatabase().query(TBUser.name, null,
-				null, null, null, null, null);
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		Cursor cursor = dm.query(TBUser.name, null, null, null, null, null,
+				null);
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			do {
@@ -65,17 +150,52 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public void addSellerGoods(final String gname, final float price,
 			final byte[] bytes) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
 		subHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
 				String uname = BaseApplication.mBaseApplication
 						.getCurrentAccount().getUin();
-				String sql = "insert into " + AppConstants.TBSGoods.name + "("
-						+ uname + "," + gname + "," + bytes + "," + price + ")";
-				helper.getWritableDatabase().insert(sql);
+				ContentValues values = new ContentValues();
+				values.put(AppConstants.TBSGoods.Cloum.sname, uname);
+				values.put(AppConstants.TBSGoods.Cloum.gname, gname);
+				values.put(AppConstants.TBSGoods.Cloum.gprice, price);
+				values.put(AppConstants.TBSGoods.Cloum.gpicture, bytes);
+				dm.insert(AppConstants.TBSGoods.name, values);
+				addDataQueue(AppConstants.TBSGoods.name, values, null, null,
+						BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 			}
 		});
+	}
+
+	public void addDataQueue(String _tableName, ContentValues _contentValues,
+			String _whereClause, String[] _whereArgs, int _action) {
+		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _contentValues,
+				_whereClause, _whereArgs, _action);
+		synchronized (sGoodsQueue) {
+			sGoodsQueue.add(queueItem);
+		}
+		if (isDestroy) {
+			Log.e(TAG, "addDataQueue after destroy");
+			saveNotify();
+		}
+	}
+
+	/**
+	 * 通知队列存储
+	 */
+	public void saveNotify() {
+		if (isDestroy) {// 处理退出后的入库请求
+			transSaveToDatabase();
+		} else {
+			synchronized (sGoodsQueue) {
+				sGoodsQueue.notify();
+			}
+		}
 	}
 
 	public boolean login(User user) {
@@ -91,6 +211,10 @@ public class FruitVgDBManager extends Observable implements Manager {
 	}
 
 	public void registerUser(final String uin, final String pwd, final int type) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
 		subHandler.post(new Runnable() {
 
 			@Override
@@ -102,8 +226,13 @@ public class FruitVgDBManager extends Observable implements Manager {
 					message.msg = false;
 					message.extra = "用户已存在";
 				} else {
-					sucess = helper.getWritableDatabase().registerUser(uin,
-							pwd, type);
+					ContentValues values = new ContentValues();
+					values.put(AppConstants.TBUser.Cloum.uname, uin);
+					values.put(AppConstants.TBUser.Cloum.password, pwd);
+					values.put(AppConstants.TBUser.Cloum.type, type);
+					long id = dm.insert(AppConstants.TBUser.name, values);
+					sucess = id == -1 ? false : true;
+
 					message.msg = sucess;
 					if (sucess) {
 						BaseApplication.mBaseApplication.setLogin(true);
@@ -121,8 +250,26 @@ public class FruitVgDBManager extends Observable implements Manager {
 		});
 	}
 
+	public Vector<SGoodsqueueItem> getSGoodsQueue() {
+		return sGoodsQueue;
+	}
+
 	@Override
 	public void destroy() {
-		helper.close();
+		isDestroy = false;
+		subHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				transSaveToDatabase();
+			}
+		});
+		if (sGoodsQueue != null) {
+			synchronized (sGoodsQueue) {
+				if (sGoodsQueue != null) {
+					sGoodsQueue.notify();
+				}
+			}
+		}
 	}
 }

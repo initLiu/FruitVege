@@ -64,12 +64,17 @@ public class BaseApplication extends Application {
 
 	public void initRuntime() {
 		// 创建数据库
-		mAppInterface.getManager(AppInterface.FRUITVG);
+		mAppInterface.getDBManagerFactory();
+	}
+
+	public void exit() {
+		closeAllActivity();
+		System.exit(0);
 	}
 
 	public void closeAllActivity() {
 		int count = mActivitys.size();
-		for (int i = 0; i < count; i++) {
+		for (int i = count - 1; i >= 0; --i) {
 			WeakReference<BaseActivity> ref = mActivitys.get(i);
 			Activity activity = ref != null ? ref.get() : null;
 			if (activity == null) {
@@ -77,6 +82,7 @@ public class BaseApplication extends Application {
 			} else if (!activity.isFinishing()) {
 				activity.finish();
 			} else {
+				//不在finish后立刻执行，而在下一次调用的时候执行
 				mActivitys.remove(i);
 			}
 		}

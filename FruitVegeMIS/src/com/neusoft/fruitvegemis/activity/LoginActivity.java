@@ -90,8 +90,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public void onBackPressed() {
-		finish();
-		System.exit(0);
+		BaseApplication.mBaseApplication.getAppInterface().exit();
+		if (!isFinishing()) {
+			finish();
+		}
 	}
 
 	@Override

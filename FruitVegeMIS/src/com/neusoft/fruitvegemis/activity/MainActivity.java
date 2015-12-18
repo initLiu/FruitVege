@@ -175,11 +175,7 @@ public class MainActivity extends BaseActivity {
 			public boolean onOptionsItemSelected(MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_exit:
-					BaseApplication.mBaseApplication.setLogin(false);
-					Intent intent = new Intent(MainActivity.this,
-							LoginActivity.class);
-					MainActivity.this.startActivity(intent);
-					MainActivity.this.finish();
+					exitApp();
 					return true;
 				default:
 					break;
@@ -189,6 +185,14 @@ public class MainActivity extends BaseActivity {
 
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+	}
+
+	protected void exitApp() {
+		BaseApplication.mBaseApplication.getAppInterface().release();
+		BaseApplication.mBaseApplication.setLogin(false);
+		Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+		MainActivity.this.startActivity(intent);
+		MainActivity.this.finish();
 	}
 
 	@Override

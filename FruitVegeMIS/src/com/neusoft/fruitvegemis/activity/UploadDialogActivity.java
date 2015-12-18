@@ -68,6 +68,7 @@ public class UploadDialogActivity extends BaseActivity implements
 			break;
 		case R.id.upload:
 			insertToDB();
+			finish();
 			break;
 		case R.id.cancle:
 			finish();
