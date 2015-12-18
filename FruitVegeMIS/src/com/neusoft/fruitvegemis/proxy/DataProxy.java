@@ -39,7 +39,7 @@ public class DataProxy extends BaseProxy {
 				fVgDBManager.transSaveToDatabase();
 			}
 			List<SGoodsqueueItem> sgoodsListFromQueue = getSGoodsListFromQueue();
-			List<E>getDM().rawQuerySGoods(sql, null);
+			return getDM().rawQuerySGoods(sql, null);
 		}
 	}
 

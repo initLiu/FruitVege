@@ -1,6 +1,8 @@
 package com.neusoft.fruitvegemis.datapool;
 
-public class SGoodsRecord {
+import com.neusoft.fruitvegemis.persistence.Entity;
+
+public class SGoodsRecord extends Entity{
 	public String sname;// 卖家
 	public String gname;// 商品名
 	public float gprice;// 商品价格

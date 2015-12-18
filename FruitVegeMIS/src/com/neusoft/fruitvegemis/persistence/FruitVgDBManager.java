@@ -14,6 +14,7 @@ import android.util.Log;
 import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.manager.FruitDBManager;
 import com.neusoft.fruitvegemis.manager.Manager;
 import com.neusoft.fruitvegemis.utils.AppConstants;
@@ -166,16 +167,19 @@ public class FruitVgDBManager extends Observable implements Manager {
 				values.put(AppConstants.TBSGoods.Cloum.gprice, price);
 				values.put(AppConstants.TBSGoods.Cloum.gpicture, bytes);
 				dm.insert(AppConstants.TBSGoods.name, values);
-				addDataQueue(AppConstants.TBSGoods.name, values, null, null,
-						BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+				SGoodsRecord record = new SGoodsRecord();
+				record.init(uname, gname, price, bytes);
+				addDataQueue(AppConstants.TBSGoods.name, record, values, null,
+						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 			}
 		});
 	}
 
-	public void addDataQueue(String _tableName, ContentValues _contentValues,
-			String _whereClause, String[] _whereArgs, int _action) {
-		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _contentValues,
-				_whereClause, _whereArgs, _action);
+	public void addDataQueue(String _tableName, Entity _item,
+			ContentValues _contentValues, String _whereClause,
+			String[] _whereArgs, int _action) {
+		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _item,
+				_contentValues, _whereClause, _whereArgs, _action);
 		synchronized (sGoodsQueue) {
 			sGoodsQueue.add(queueItem);
 		}
