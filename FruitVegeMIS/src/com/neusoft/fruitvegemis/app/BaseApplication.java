@@ -3,6 +3,7 @@ package com.neusoft.fruitvegemis.app;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import com.neusoft.fruitvegemis.activity.BaseActivity;
 
@@ -95,5 +96,15 @@ public class BaseApplication extends Application {
 
 	public void removeBaseActivity(BaseActivity activity) {
 		mActivitys.remove(new WeakReference<BaseActivity>(activity));
+	}
+
+	List<BusinessObserver> uiObservers = new Vector<BusinessObserver>();
+
+	public void addObserver(BusinessObserver observer) {
+		uiObservers.add(observer);
+	}
+
+	public void removeObserver(BusinessObserver observer) {
+		uiObservers.remove(observer);
 	}
 }

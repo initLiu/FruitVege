@@ -12,8 +12,10 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.neusoft.fruitvegemis.R;
@@ -23,13 +25,19 @@ public class ImageAdapter extends BaseAdapter {
 
 	private Context mContext;
 	private List<SGoodsRecord> goodsList = new ArrayList<SGoodsRecord>();
+	private OnClickListener mClickListener;
+
+	public ImageAdapter(Context context, OnClickListener listener) {
+		mContext = context;
+		this.mClickListener = listener;
+	}
 
 	public ImageAdapter(Context context) {
-		mContext = context;
+		this(context, null);
 	}
 
 	public void setDataList(List<SGoodsRecord> list) {
-		goodsList = list;
+		goodsList.addAll(list);
 		notifyDataSetChanged();
 	}
 
@@ -54,6 +62,9 @@ public class ImageAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(
 					R.layout.item_goods, null);
+		}
+		if (mClickListener != null) {
+			convertView.setOnClickListener(mClickListener);
 		}
 		ImageView pic = (ImageView) convertView.findViewById(R.id.item_pict);
 		TextView gname = (TextView) convertView.findViewById(R.id.item_name);
@@ -96,7 +107,7 @@ public class ImageAdapter extends BaseAdapter {
 		return bitmap;
 	}
 
-	static class SGoodsItemHolder extends Itemholder {
+	public static class SGoodsItemHolder extends Itemholder {
 		public String gname;
 		public float gprice;
 		public String sname;

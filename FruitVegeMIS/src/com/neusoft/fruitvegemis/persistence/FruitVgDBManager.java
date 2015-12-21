@@ -126,6 +126,25 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
+	public List<SGoodsRecord> querySGoods() {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		String sql = "select * from " + AppConstants.TBSGoods.name;
+		return dm.rawQuerySGoods(sql, null);
+	}
+
+	public List<SGoodsRecord> querySGoods(String curUin) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		String sql = "select * from " + AppConstants.TBSGoods.name + " where "
+				+ AppConstants.TBSGoods.Cloum.sname + "= ?";
+		return dm.rawQuerySGoods(sql, new String[] { curUin });
+	}
+
 	private void loadUser() {
 		Log.e(TAG, "loaduser");
 		if (dm == null) {
@@ -173,6 +192,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 				record.init(uname, gname, price, bytes);
 				addDataQueue(AppConstants.TBSGoods.name, record, values, null,
 						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+				app.getGoodsHandler().onReceive(record);
 			}
 		});
 	}
