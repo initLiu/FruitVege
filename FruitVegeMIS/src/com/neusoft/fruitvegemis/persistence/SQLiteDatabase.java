@@ -5,10 +5,12 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.neusoft.fruitvegemis.utils.AppConstants;
 
 public class SQLiteDatabase {
+	public static final String TAG = "SQLiteDatabase";
 	public android.database.sqlite.SQLiteDatabase db;
 
 	SQLiteDatabase(android.database.sqlite.SQLiteDatabase db) {
@@ -47,7 +49,7 @@ public class SQLiteDatabase {
 		}
 		return cursor;
 	}
-	
+
 	public Cursor query(String table, String[] columns, String selection,
 			String[] selectionArgs, String groupBy, String having,
 			String orderBy) {
@@ -64,6 +66,7 @@ public class SQLiteDatabase {
 	}
 
 	public long insert(String table, ContentValues values) {
+		Log.e(TAG, "insert");
 		return db.insert(table, null, values);
 	}
 }

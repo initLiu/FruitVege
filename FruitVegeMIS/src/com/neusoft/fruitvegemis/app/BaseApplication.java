@@ -65,6 +65,7 @@ public class BaseApplication extends Application {
 	public void initRuntime() {
 		// 创建数据库
 		mAppInterface.getDBManagerFactory();
+		Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
 	}
 
 	public void exit() {
@@ -82,7 +83,7 @@ public class BaseApplication extends Application {
 			} else if (!activity.isFinishing()) {
 				activity.finish();
 			} else {
-				//不在finish后立刻执行，而在下一次调用的时候执行
+				// 不在finish后立刻执行，而在下一次调用的时候执行
 				mActivitys.remove(i);
 			}
 		}

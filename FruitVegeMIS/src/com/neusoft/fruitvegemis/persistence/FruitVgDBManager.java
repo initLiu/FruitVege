@@ -88,6 +88,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 	 * 批量存储消息到database
 	 */
 	public void transSaveToDatabase(FruitDBManager dm) {
+		Log.e(TAG, "transSaveToDatabase");
 		synchronized (transSaveLock) {
 			List<SGoodsqueueItem> items = null;
 			synchronized (sGoodsQueue) {
@@ -105,6 +106,8 @@ public class FruitVgDBManager extends Observable implements Manager {
 					for (SGoodsqueueItem queueItem : items) {
 						++optCount;
 						String tableName = queueItem.tableName;
+						Log.e(TAG, "transSaveToDatabase count=" + optCount
+								+ ",tableName=" + tableName);
 						switch (queueItem.action) {
 						case BaseQueueItem.QUEUE_ITEM_ACTION_INSERT:
 							dm.insert(queueItem);
@@ -166,7 +169,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 				values.put(AppConstants.TBSGoods.Cloum.gname, gname);
 				values.put(AppConstants.TBSGoods.Cloum.gprice, price);
 				values.put(AppConstants.TBSGoods.Cloum.gpicture, bytes);
-				dm.insert(AppConstants.TBSGoods.name, values);
 				SGoodsRecord record = new SGoodsRecord();
 				record.init(uname, gname, price, bytes);
 				addDataQueue(AppConstants.TBSGoods.name, record, values, null,
@@ -178,6 +180,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 	public void addDataQueue(String _tableName, Entity _item,
 			ContentValues _contentValues, String _whereClause,
 			String[] _whereArgs, int _action) {
+		Log.e(TAG, "addDataQueue tableName=" + _tableName);
 		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _item,
 				_contentValues, _whereClause, _whereArgs, _action);
 		synchronized (sGoodsQueue) {
@@ -193,6 +196,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 	 * 通知队列存储
 	 */
 	public void saveNotify() {
+		Log.e(TAG, "saveNotify isDestroy=" + isDestroy);
 		if (isDestroy) {// 处理退出后的入库请求
 			transSaveToDatabase();
 		} else {

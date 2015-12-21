@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.persistence.SGoodsqueueItem;
@@ -19,6 +20,7 @@ public class FruitDBManager extends DBManager {
 	}
 
 	public void insert(SGoodsqueueItem item) {
+		Log.e(TAG, "insert");
 		insert(item.tableName, item.contentValues);
 	}
 

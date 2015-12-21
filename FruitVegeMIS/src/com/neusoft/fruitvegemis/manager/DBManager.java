@@ -2,11 +2,13 @@ package com.neusoft.fruitvegemis.manager;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.neusoft.fruitvegemis.persistence.SQLiteDatabase;
 import com.neusoft.fruitvegemis.persistence.SQLiteOpenHelper;
 
 public class DBManager {
+	public static final String TAG="DBManager";
 	private SQLiteOpenHelper dbHelper;
 	private SQLiteDatabase db;
 
@@ -36,6 +38,7 @@ public class DBManager {
 	}
 
 	public long insert(String table, ContentValues values) {
+		Log.e(TAG, "insert");
 		if (db == null) {
 			db = dbHelper.getWritableDatabase();
 		}
