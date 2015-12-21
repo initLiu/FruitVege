@@ -16,8 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.neusoft.fruitvegemis.R;
 import com.neusoft.fruitvegemis.adapter.ImageAdapter;
@@ -39,6 +44,7 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	private AppInterface mApp;
 	private List<SGoodsRecord> goodsRecords;
 	private LoadGoodsTask mLoadGoodsTask;
+	private ImageView shopCart;
 	public static final int REFRESH_GOODS_LIST = 0;
 
 	public static MainFragment getInstance(int type) {
@@ -88,6 +94,8 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 		mGridView.setAdapter(mImageAdapter);
 		mLoadGoodsTask = new LoadGoodsTask();
 		mLoadGoodsTask.execute(null, null, null);
+		shopCart = (ImageView) view.findViewById(R.id.shopCart);
+		shopCart.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -171,9 +179,46 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 
 	@Override
 	public void onClick(View v) {
-		if(v.getTag() instanceof SGoodsItemHolder){
+		if (v.getTag() instanceof SGoodsItemHolder) {
 			SGoodsItemHolder holder = (SGoodsItemHolder) v.getTag();
 			int position = holder.position;
+			startAnimation(v);
 		}
+	}
+
+	private void startAnimation(View v) {
+		float fromXDelta = v.getX();
+		float fromYDelta = v.getY();
+		float toXDelta = 0;
+		float toYDelta = getActivity().getWindowManager().getDefaultDisplay()
+				.getWidth() / 2;
+		TranslateAnimation animation = new TranslateAnimation(fromXDelta,
+				toXDelta, fromYDelta, toYDelta);
+		animation.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+
+				shopCart.setVisibility(View.GONE);
+			}
+		});
+		animation.setFillAfter(false);
+		animation.setDuration(1000l);
+		animation.setInterpolator(new LinearInterpolator());
+
+		shopCart.setVisibility(View.VISIBLE);
+		shopCart.startAnimation(animation);
 	}
 }

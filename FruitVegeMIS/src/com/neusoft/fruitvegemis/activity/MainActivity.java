@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity {
 			R.string.draweritem_main, R.string.draweritem_bill };
 
 	private User currentAccout;
+	private int curPos = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void initData() {
+		curPos = -1;
 		currentAccout = BaseApplication.mBaseApplication.getCurrentAccount();
 		List<String> items = new ArrayList<String>();
 		if (currentAccout.getType() == 0) {
@@ -91,8 +93,8 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void setSelectItem(String title, int position) {
-		int curPos = mDrawerList.getSelectedItemPosition();
 		if (curPos == position) {
+			mDrawerLayout.closeDrawer(Gravity.START);
 			return;
 		}
 		if (currentAccout.getType() == 0) {
@@ -100,10 +102,10 @@ public class MainActivity extends BaseActivity {
 		} else {
 			setSelectItemSeller(title, position);
 		}
+		curPos = position;
 	}
 
 	private void setSelectItemBuyer(String title, int position) {
-		mDrawerList.setItemChecked(position, true);
 		setTitle(title);
 		switch (position) {
 		case 0:
@@ -131,7 +133,6 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void setSelectItemSeller(String title, int position) {
-		mDrawerList.setItemChecked(position, true);
 		setTitle(title);
 		switch (position) {
 		case 0:

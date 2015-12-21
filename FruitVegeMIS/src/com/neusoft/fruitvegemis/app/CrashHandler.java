@@ -33,6 +33,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	@Override
 	public void uncaughtException(Thread thread, Throwable ex) {
 		Log.e("Crash", "FruitVgMIS has crashed");
+		ex.printStackTrace();
 		BaseApplication.getBaseApplication().exit();
 		Runnable runnable = new Runnable() {
 
