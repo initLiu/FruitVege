@@ -39,12 +39,12 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	public static final String TAG = "MainFragment";
 	private int mUserType;
 	private GridView mGridView;
+	private ImageView mShoppingCart;
 	private ImageAdapter mImageAdapter;
 	private Handler uiHandler;
 	private AppInterface mApp;
 	private List<SGoodsRecord> goodsRecords;
 	private LoadGoodsTask mLoadGoodsTask;
-	private ImageView shopCart;
 	public static final int REFRESH_GOODS_LIST = 0;
 
 	public static MainFragment getInstance(int type) {
@@ -94,8 +94,9 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 		mGridView.setAdapter(mImageAdapter);
 		mLoadGoodsTask = new LoadGoodsTask();
 		mLoadGoodsTask.execute(null, null, null);
-		shopCart = (ImageView) view.findViewById(R.id.shopCart);
-		shopCart.setVisibility(View.GONE);
+
+		mShoppingCart = (ImageView) view.findViewById(R.id.shoppingCart);
+		mShoppingCart.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -211,14 +212,14 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 			@Override
 			public void onAnimationEnd(Animation animation) {
 
-				shopCart.setVisibility(View.GONE);
+				mShoppingCart.setVisibility(View.GONE);
 			}
 		});
 		animation.setFillAfter(false);
 		animation.setDuration(1000l);
 		animation.setInterpolator(new LinearInterpolator());
 
-		shopCart.setVisibility(View.VISIBLE);
-		shopCart.startAnimation(animation);
+		mShoppingCart.setVisibility(View.VISIBLE);
+		mShoppingCart.startAnimation(animation);
 	}
 }

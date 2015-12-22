@@ -66,7 +66,7 @@ public class BaseApplication extends Application {
 	public void initRuntime() {
 		// 创建数据库
 		mAppInterface.getDBManagerFactory();
-		Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
+//		Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
 	}
 
 	public void exit() {

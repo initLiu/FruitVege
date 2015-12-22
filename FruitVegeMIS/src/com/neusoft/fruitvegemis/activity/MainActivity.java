@@ -37,7 +37,8 @@ public class MainActivity extends BaseActivity {
 			R.string.draweritem_main, R.string.draweritem_bill };
 
 	private User currentAccout;
-	private int curPos = -1;
+	private int curPos = -1,clickPos = -1;
+	private String tmpTitle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +89,14 @@ public class MainActivity extends BaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			setSelectItem((String) view.getTag(), position);
+			mDrawerLayout.closeDrawer(Gravity.START);
+			tmpTitle = (String) view.getTag();
+			clickPos = position;
 		}
 	}
 
 	private void setSelectItem(String title, int position) {
 		if (curPos == position) {
-			mDrawerLayout.closeDrawer(Gravity.START);
 			return;
 		}
 		if (currentAccout.getType() == 0) {
@@ -129,7 +131,6 @@ public class MainActivity extends BaseActivity {
 		default:
 			break;
 		}
-		mDrawerLayout.closeDrawer(Gravity.START);
 	}
 
 	private void setSelectItemSeller(String title, int position) {
@@ -151,7 +152,6 @@ public class MainActivity extends BaseActivity {
 		default:
 			break;
 		}
-		mDrawerLayout.closeDrawer(Gravity.START);
 	}
 
 	private void initUI() {
@@ -163,6 +163,7 @@ public class MainActivity extends BaseActivity {
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
+				setSelectItem(tmpTitle, clickPos);
 				invalidateOptionsMenu();
 			}
 
