@@ -70,7 +70,6 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		mUserType = getArguments().getInt("type", 0);

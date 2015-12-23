@@ -10,8 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:scaleType="fitCenter"
-        android:src="@drawable/default_goods" />
+        android:scaleType="fitCenter" />
 
     <LinearLayout
         android:layout_width="fill_parent"
