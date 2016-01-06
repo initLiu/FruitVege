@@ -3,7 +3,6 @@ package com.neusoft.fruitvegemis.activity;
 import java.util.List;
 
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,11 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -33,10 +32,8 @@ import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.GoodsObserver;
 import com.neusoft.fruitvegemis.app.User;
 import com.neusoft.fruitvegemis.datapool.Goods;
-import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
-import com.neusoft.fruitvegemis.utils.AppConstants;
 
 public class MainFragment extends Fragment implements Callback, OnClickListener {
 
@@ -189,8 +186,8 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	public void onClick(View v) {
 		if (v.getTag() instanceof SGoodsItemHolder) {
 			SGoodsItemHolder holder = (SGoodsItemHolder) v.getTag();
-			int position = holder.position;
 			startAnimation(v);
+			addGoodToOrder(holder);
 		}
 	}
 

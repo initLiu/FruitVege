@@ -63,7 +63,8 @@ public class SQLiteOpenHelper {
 					+ AppConstants.TBUOrder.Cloum.oid + " TEXT,"
 					+ AppConstants.TBUOrder.Cloum.ostate
 					+ " INTERGER,"
-					+ AppConstants.TBUOrder.Cloum.oprice + " REAL DEFAULT 0.0)";
+					+ AppConstants.TBUOrder.Cloum.oprice + " REAL DEFAULT 0.0,"
+					+ AppConstants.TBUOrder.Cloum.odate + " TEXT NOT NULL)";
 			db.execSQL(sql);
 
 			sql = "create table " + AppConstants.TBOrder.name + "("

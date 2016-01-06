@@ -6,8 +6,13 @@ import java.util.List;
 import com.neusoft.fruitvegemis.persistence.Entity;
 
 public class Order extends Entity {
-	private List<Goods> goodsList = new ArrayList<>();
+	private List<Goods> goodsList = new ArrayList<Goods>();
 	public final String orderId;
+	public OrderState orderState;
+
+	public enum OrderState {
+		unCommit, commit
+	}
 
 	public Order() {
 		orderId = Long.toString(System.currentTimeMillis());

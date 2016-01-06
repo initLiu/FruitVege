@@ -1,5 +1,7 @@
 package com.neusoft.fruitvegemis.persistence;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Vector;
@@ -9,6 +11,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.neusoft.fruitvegemis.app.AppInterface;
@@ -176,7 +179,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
-	public void addGoods2Order(final Goods goods) {
+	public void addGoods2Order(Goods goods) {
 		if (dm == null) {
 			dm = (FruitDBManager) app.getDBManagerFactory()
 					.createFruitDBManager();
@@ -184,16 +187,23 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 		if (unCommitOrder == null) {
 			unCommitOrder = new Order();
+			unCommitOrder.orderState = Order.OrderState.unCommit;
+			addUserOrder(unCommitOrder);
+			orderMap.put(unCommitOrder.orderId, unCommitOrder);
 		}
 		unCommitOrder.addGoods(goods);
 
+		addGoods2Order(unCommitOrder, goods);
+	}
+
+	private void addGoods2Order(final Order order, final Goods goods) {
 		subHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
+				// 将商品添加到订单中
 				ContentValues values = new ContentValues();
-				values.put(AppConstants.TBOrder.Cloum.oid,
-						unCommitOrder.orderId);
+				values.put(AppConstants.TBOrder.Cloum.oid, order.orderId);
 				values.put(AppConstants.TBOrder.Cloum.gname, goods.gname);
 				values.put(AppConstants.TBOrder.Cloum.gprice, goods.gprice);
 				values.put(AppConstants.TBOrder.Cloum.gpicture, goods.gpicture);
@@ -202,6 +212,34 @@ public class FruitVgDBManager extends Observable implements Manager {
 						goods.gname, goods.gprice, goods.gpicture);
 
 				addDataQueue(AppConstants.TBOrder.name, record, values, null,
+						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+			}
+		});
+	}
+
+	private void addUserOrder(final Order order) {
+		subHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				User user = BaseApplication.getBaseApplication()
+						.getCurrentAccount();
+
+				SimpleDateFormat df = new SimpleDateFormat(
+						"yyyy-MM-dd HH:mm:ss");
+				String date = df.format(new Date());
+
+				ContentValues values = new ContentValues();
+				values.put(AppConstants.TBUOrder.Cloum.odate, date);
+				values.put(AppConstants.TBUOrder.Cloum.oid, order.orderId);
+				values.put(AppConstants.TBUOrder.Cloum.oprice,
+						order.getOrderPrice());
+				values.put(AppConstants.TBUOrder.Cloum.ostate,
+						order.orderState.ordinal());
+				values.put(AppConstants.TBUOrder.Cloum.type, user.getType());
+				values.put(AppConstants.TBUOrder.Cloum.uname, user.getUin());
+
+				addDataQueue(AppConstants.TBUOrder.name, null, values, null,
 						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 			}
 		});
