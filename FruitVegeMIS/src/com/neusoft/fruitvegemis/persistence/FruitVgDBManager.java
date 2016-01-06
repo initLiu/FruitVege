@@ -14,6 +14,9 @@ import android.util.Log;
 import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.datapool.Goods;
+import com.neusoft.fruitvegemis.datapool.Order;
+import com.neusoft.fruitvegemis.datapool.OrderRecord;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.manager.FruitDBManager;
 import com.neusoft.fruitvegemis.manager.Manager;
@@ -28,6 +31,8 @@ public class FruitVgDBManager extends Observable implements Manager {
 	private HandlerThread subThandlerhread;
 	private Handler subHandler;
 	private ConcurrentHashMap<String, User> userMap = new ConcurrentHashMap<String, User>();
+	private ConcurrentHashMap<String, Order> orderMap = new ConcurrentHashMap<String, Order>();
+	private Order unCommitOrder;
 	private Vector<SGoodsqueueItem> sGoodsQueue;
 	private Thread writeThread;
 	boolean isDestroy = false;
@@ -169,6 +174,37 @@ public class FruitVgDBManager extends Observable implements Manager {
 				}
 			} while (cursor.moveToNext());
 		}
+	}
+
+	public void addGoods2Order(final Goods goods) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+
+		if (unCommitOrder == null) {
+			unCommitOrder = new Order();
+		}
+		unCommitOrder.addGoods(goods);
+
+		subHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				ContentValues values = new ContentValues();
+				values.put(AppConstants.TBOrder.Cloum.oid,
+						unCommitOrder.orderId);
+				values.put(AppConstants.TBOrder.Cloum.gname, goods.gname);
+				values.put(AppConstants.TBOrder.Cloum.gprice, goods.gprice);
+				values.put(AppConstants.TBOrder.Cloum.gpicture, goods.gpicture);
+
+				OrderRecord record = new OrderRecord(unCommitOrder.orderId,
+						goods.gname, goods.gprice, goods.gpicture);
+
+				addDataQueue(AppConstants.TBOrder.name, record, values, null,
+						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+			}
+		});
 	}
 
 	public void addSellerGoods(final String gname, final float price,

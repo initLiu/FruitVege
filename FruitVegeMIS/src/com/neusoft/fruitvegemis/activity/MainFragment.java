@@ -3,6 +3,7 @@ package com.neusoft.fruitvegemis.activity;
 import java.util.List;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,8 +32,11 @@ import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.GoodsObserver;
 import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.datapool.Goods;
+import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import com.neusoft.fruitvegemis.utils.AppConstants;
 
 public class MainFragment extends Fragment implements Callback, OnClickListener {
 
@@ -89,7 +93,11 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) view.findViewById(R.id.gridview);
-		mImageAdapter = new ImageAdapter(getActivity(), this);
+		if (mUserType == 1) {
+			mImageAdapter = new ImageAdapter(getActivity());
+		} else if (mUserType == 0) {
+			mImageAdapter = new ImageAdapter(getActivity(), this);
+		}
 		mGridView.setAdapter(mImageAdapter);
 		mLoadGoodsTask = new LoadGoodsTask();
 		mLoadGoodsTask.execute(null, null, null);
@@ -184,6 +192,13 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 			int position = holder.position;
 			startAnimation(v);
 		}
+	}
+
+	private void addGoodToOrder(SGoodsItemHolder goods) {
+		FruitVgDBManager dbManager = (FruitVgDBManager) BaseApplication.mBaseApplication
+				.getAppInterface().getManager(AppInterface.FRUITVG);
+		dbManager.addGoods2Order(new Goods(goods.gname, goods.gprice,
+				goods.sname, goods.gpicture));
 	}
 
 	private void startAnimation(View v) {

@@ -4,8 +4,8 @@ import android.content.ContentValues;
 
 public class BaseQueueItem {
 	public static final int QUEUE_ITEM_ACTION_INSERT = 0;
-	public static final int QUEUE_ITEM_ACTION_DELETE = 0;
-	public static final int QUEUE_ITEM_ACTION_UPDATE = 0;
+	public static final int QUEUE_ITEM_ACTION_DELETE = 1;
+	public static final int QUEUE_ITEM_ACTION_UPDATE = 2;
 
 	public String tableName;
 	public ContentValues contentValues;

@@ -78,7 +78,7 @@ public class ImageAdapter extends BaseAdapter {
 		holder.position = position;
 		convertView.setTag(holder);
 
-//		pic.setImageBitmap(byte2Bitmap(holder.gpicture));
+		pic.setImageBitmap(byte2Bitmap(holder.gpicture));
 		gname.setText(holder.gname);
 		gprice.setText(holder.gprice + "");
 		return convertView;
