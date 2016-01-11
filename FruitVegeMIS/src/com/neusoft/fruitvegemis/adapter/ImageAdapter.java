@@ -3,12 +3,7 @@ package com.neusoft.fruitvegemis.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +14,7 @@ import android.widget.TextView;
 
 import com.neusoft.fruitvegemis.R;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
+import com.neusoft.fruitvegemis.utils.UIUtils;
 
 public class ImageAdapter extends BaseAdapter {
 
@@ -78,33 +74,34 @@ public class ImageAdapter extends BaseAdapter {
 		holder.position = position;
 		convertView.setTag(holder);
 
-		pic.setImageBitmap(byte2Bitmap(holder.gpicture));
+		pic.setImageBitmap(UIUtils.decodeSampledBitmapFromByte(holder.gpicture,
+				100, 100));
 		gname.setText(holder.gname);
 		gprice.setText(holder.gprice + "");
 		return convertView;
 	}
 
-	private Bitmap byte2Bitmap(byte[] pic) {
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		DisplayMetrics dm = new DisplayMetrics();
-
-		((Activity) mContext).getWindowManager().getDefaultDisplay()
-				.getMetrics(dm);
-
-		Bitmap bitmap = BitmapFactory.decodeByteArray(pic, 0, pic.length);
-
-		float fHS = (float) dm.heightPixels / (float) bitmap.getHeight();
-
-		float fWS = (float) dm.widthPixels / (float) bitmap.getWidth();
-
-		float fFinalS = Math.min(fHS, fWS);
-
-		opt.inSampleSize = (int) (1 / fFinalS);
-		opt.inPreferredConfig = Config.RGB_565;
-
-		bitmap = BitmapFactory.decodeByteArray(pic, 0, pic.length, opt);
-		return bitmap;
-	}
+	// private Bitmap byte2Bitmap(byte[] pic) {
+	// BitmapFactory.Options opt = new BitmapFactory.Options();
+	// DisplayMetrics dm = new DisplayMetrics();
+	//
+	// ((Activity) mContext).getWindowManager().getDefaultDisplay()
+	// .getMetrics(dm);
+	//
+	// Bitmap bitmap = BitmapFactory.decodeByteArray(pic, 0, pic.length);
+	//
+	// float fHS = (float) dm.heightPixels / (float) bitmap.getHeight();
+	//
+	// float fWS = (float) dm.widthPixels / (float) bitmap.getWidth();
+	//
+	// float fFinalS = Math.min(fHS, fWS);
+	//
+	// opt.inSampleSize = (int) (1 / fFinalS);
+	// opt.inPreferredConfig = Config.RGB_565;
+	//
+	// bitmap = BitmapFactory.decodeByteArray(pic, 0, pic.length, opt);
+	// return bitmap;
+	// }
 
 	public static class SGoodsItemHolder extends Itemholder {
 		public String gname;

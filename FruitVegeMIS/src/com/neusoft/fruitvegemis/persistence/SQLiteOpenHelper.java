@@ -70,6 +70,7 @@ public class SQLiteOpenHelper {
 			sql = "create table " + AppConstants.TBOrder.name + "("
 					+ AppConstants.TBOrder.Cloum.id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ AppConstants.TBOrder.Cloum.oid + " TEXT NOT NULL,"
+					+ AppConstants.TBOrder.Cloum.sname + " TEXT NOT NULL,"
 					+ AppConstants.TBOrder.Cloum.gname + " TEXT NOT NULL,"
 					+ AppConstants.TBOrder.Cloum.gpicture + " BLOB,"
 					+ AppConstants.TBOrder.Cloum.gprice + " REAL NOT NULL)";

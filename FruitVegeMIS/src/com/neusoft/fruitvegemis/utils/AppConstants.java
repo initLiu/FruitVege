@@ -16,7 +16,7 @@ public class AppConstants {
 	}
 
 	public static class TBUOrder {
-		public static String name = "user";
+		public static String name = "userOrder";
 
 		public static class Cloum {
 			public static String id = "_id";
@@ -35,6 +35,7 @@ public class AppConstants {
 		public static class Cloum {
 			public static String id = "_id";
 			public static String oid = "oid";
+			public static String sname = "sname";
 			public static String gname = "gname";
 			public static String gpicture = "gpicture";
 			public static String gprice = "gprice";

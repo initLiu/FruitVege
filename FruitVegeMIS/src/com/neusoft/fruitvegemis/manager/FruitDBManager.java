@@ -6,7 +6,11 @@ import java.util.List;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.neusoft.fruitvegemis.datapool.Goods;
+import com.neusoft.fruitvegemis.datapool.Order;
+import com.neusoft.fruitvegemis.datapool.Order.OrderState;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
+import com.neusoft.fruitvegemis.datapool.UOrderRecord;
 import com.neusoft.fruitvegemis.persistence.SGoodsqueueItem;
 import com.neusoft.fruitvegemis.persistence.SQLiteOpenHelper;
 import com.neusoft.fruitvegemis.utils.AppConstants;
@@ -44,5 +48,53 @@ public class FruitDBManager extends DBManager {
 			} while (cursor.moveToNext());
 		}
 		return results;
+	}
+
+	public List<UOrderRecord> queryUOrder(String table) {
+		List<UOrderRecord> rst = new ArrayList<UOrderRecord>();
+		Cursor cursor = query(table, null, null, null, null, null, null);
+		if (cursor != null && cursor.getCount() > 0) {
+			cursor.moveToFirst();
+			do {
+				String odate = cursor.getString(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.odate));
+				String oid = cursor.getString(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.oid));
+				float oprice = cursor.getFloat(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.oprice));
+				int ostate = cursor.getInt(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.ostate));
+				int type = cursor.getInt(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.type));
+				String uname = cursor.getString(cursor
+						.getColumnIndex(AppConstants.TBUOrder.Cloum.uname));
+				UOrderRecord record = new UOrderRecord(odate, oid, oprice,
+						OrderState.values()[ostate], type, uname);
+				rst.add(record);
+			} while (cursor.moveToNext());
+		}
+		return rst;
+	}
+
+	public Order queryOrder(String oid) {
+		Order order = new Order(oid);
+		String selection = "oid=?";
+		String[] selectionArgs = { oid };
+		Cursor cursor = query(AppConstants.TBOrder.name, null, selection,
+				selectionArgs, null, null, null);
+		if (cursor != null && cursor.getCount() > 0) {
+			do {
+				String gname = cursor.getString(cursor
+						.getColumnIndex(AppConstants.TBOrder.Cloum.gname));
+				byte[] gpicture = cursor.getBlob(cursor
+						.getColumnIndex(AppConstants.TBOrder.Cloum.gpicture));
+				float gprice = cursor.getFloat(cursor
+						.getColumnIndex(AppConstants.TBOrder.Cloum.gprice));
+				String sname = cursor.getString(cursor
+						.getColumnIndex(AppConstants.TBOrder.Cloum.sname));
+				order.addGoods(new Goods(gname, gprice, sname, gpicture));
+			} while (cursor.moveToNext());
+		}
+		return order;
 	}
 }

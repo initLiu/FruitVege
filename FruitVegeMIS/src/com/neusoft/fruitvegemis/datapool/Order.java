@@ -14,6 +14,10 @@ public class Order extends Entity {
 		unCommit, commit
 	}
 
+	public Order(String oid) {
+		orderId = oid != null ? oid : Long.toString(System.currentTimeMillis());
+	}
+
 	public Order() {
 		orderId = Long.toString(System.currentTimeMillis());
 	}

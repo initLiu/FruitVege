@@ -21,6 +21,7 @@ import com.neusoft.fruitvegemis.datapool.Goods;
 import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.datapool.OrderRecord;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
+import com.neusoft.fruitvegemis.datapool.UOrderRecord;
 import com.neusoft.fruitvegemis.manager.FruitDBManager;
 import com.neusoft.fruitvegemis.manager.Manager;
 import com.neusoft.fruitvegemis.utils.AppConstants;
@@ -35,6 +36,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 	private Handler subHandler;
 	private ConcurrentHashMap<String, User> userMap = new ConcurrentHashMap<String, User>();
 	private ConcurrentHashMap<String, Order> orderMap = new ConcurrentHashMap<String, Order>();
+	private ConcurrentHashMap<String, UOrderRecord> uOrderMap = new ConcurrentHashMap<String, UOrderRecord>();
 	private Order unCommitOrder;
 	private Vector<SGoodsqueueItem> sGoodsQueue;
 	private Thread writeThread;
@@ -179,6 +181,34 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
+	public ConcurrentHashMap<String, UOrderRecord> getUserOrder() {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		// dm.query(AppConstants.TBUOrder.name, null, null, null, null, null,
+		// null);
+		if (orderMap.isEmpty()) {
+			initUserOrder();
+		}
+		return uOrderMap;
+	}
+
+	private void initUserOrder() {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		List<UOrderRecord> records = dm.queryUOrder(AppConstants.TBUOrder.name);
+		int len = records.size();
+		for (int i = 0; i < len; i++) {
+			String orderid = records.get(i).oid;
+			uOrderMap.put(orderid, records.get(i));
+			Order order = dm.queryOrder(orderid);
+			orderMap.put(orderid, order);
+		}
+	}
+
 	public void addGoods2Order(Goods goods) {
 		if (dm == null) {
 			dm = (FruitDBManager) app.getDBManagerFactory()
@@ -204,12 +234,13 @@ public class FruitVgDBManager extends Observable implements Manager {
 				// 将商品添加到订单中
 				ContentValues values = new ContentValues();
 				values.put(AppConstants.TBOrder.Cloum.oid, order.orderId);
+				values.put(AppConstants.TBOrder.Cloum.sname, goods.sname);
 				values.put(AppConstants.TBOrder.Cloum.gname, goods.gname);
 				values.put(AppConstants.TBOrder.Cloum.gprice, goods.gprice);
 				values.put(AppConstants.TBOrder.Cloum.gpicture, goods.gpicture);
 
 				OrderRecord record = new OrderRecord(unCommitOrder.orderId,
-						goods.gname, goods.gprice, goods.gpicture);
+						goods.sname, goods.gname, goods.gprice, goods.gpicture);
 
 				addDataQueue(AppConstants.TBOrder.name, record, values, null,
 						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
