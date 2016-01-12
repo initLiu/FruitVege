@@ -6,6 +6,7 @@ import java.util.List;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.datapool.Goods;
 import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.datapool.Order.OrderState;
@@ -52,7 +53,10 @@ public class FruitDBManager extends DBManager {
 
 	public List<UOrderRecord> queryUOrder(String table) {
 		List<UOrderRecord> rst = new ArrayList<UOrderRecord>();
-		Cursor cursor = query(table, null, null, null, null, null, null);
+		String selection = AppConstants.TBUOrder.Cloum.uname + "=?";
+		String[] selectionArgs = { BaseApplication.getBaseApplication()
+				.getCurrentAccount().getUin() };
+		Cursor cursor = query(table, null, selection, selectionArgs, null, null, null);
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			do {
@@ -82,6 +86,7 @@ public class FruitDBManager extends DBManager {
 		String[] selectionArgs = { oid };
 		Cursor cursor = query(AppConstants.TBOrder.name, null, selection,
 				selectionArgs, null, null, null);
+		cursor.moveToFirst();
 		if (cursor != null && cursor.getCount() > 0) {
 			do {
 				String gname = cursor.getString(cursor

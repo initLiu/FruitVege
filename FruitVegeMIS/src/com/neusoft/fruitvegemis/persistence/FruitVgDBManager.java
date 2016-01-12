@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.neusoft.fruitvegemis.app.AppInterface;
@@ -19,6 +18,7 @@ import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.app.User;
 import com.neusoft.fruitvegemis.datapool.Goods;
 import com.neusoft.fruitvegemis.datapool.Order;
+import com.neusoft.fruitvegemis.datapool.Order.OrderState;
 import com.neusoft.fruitvegemis.datapool.OrderRecord;
 import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
 import com.neusoft.fruitvegemis.datapool.UOrderRecord;
@@ -181,17 +181,15 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
-	public ConcurrentHashMap<String, UOrderRecord> getUserOrder() {
+	public ConcurrentHashMap<String, Order> getUserOrder() {
 		if (dm == null) {
 			dm = (FruitDBManager) app.getDBManagerFactory()
 					.createFruitDBManager();
 		}
-		// dm.query(AppConstants.TBUOrder.name, null, null, null, null, null,
-		// null);
 		if (orderMap.isEmpty()) {
 			initUserOrder();
 		}
-		return uOrderMap;
+		return orderMap;
 	}
 
 	private void initUserOrder() {
@@ -204,7 +202,13 @@ public class FruitVgDBManager extends Observable implements Manager {
 		for (int i = 0; i < len; i++) {
 			String orderid = records.get(i).oid;
 			uOrderMap.put(orderid, records.get(i));
+
 			Order order = dm.queryOrder(orderid);
+			order.orderState = records.get(i).ostate;
+			if (order.orderState == OrderState.unCommit) {
+				order.addEmptyGoods(new Goods());// 添加一个空商品，在构造orderadapter的时候用到
+			}
+			order.orderdate = records.get(i).odate;
 			orderMap.put(orderid, order);
 		}
 	}
@@ -300,6 +304,15 @@ public class FruitVgDBManager extends Observable implements Manager {
 				app.getGoodsHandler().onReceive(record);
 			}
 		});
+	}
+
+	public void commitOrder(String oid) {
+		if (unCommitOrder != null && unCommitOrder.orderId.equals(oid)) {
+			if (dm == null) {
+				dm = (FruitDBManager) app.getDBManagerFactory()
+						.createFruitDBManager();
+			}
+		}
 	}
 
 	public void addDataQueue(String _tableName, Entity _item,

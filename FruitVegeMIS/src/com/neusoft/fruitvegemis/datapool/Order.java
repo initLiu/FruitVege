@@ -9,6 +9,8 @@ public class Order extends Entity {
 	private List<Goods> goodsList = new ArrayList<Goods>();
 	public final String orderId;
 	public OrderState orderState;
+	public String orderdate;
+	private Goods emptyGoods;
 
 	public enum OrderState {
 		unCommit, commit
@@ -24,6 +26,20 @@ public class Order extends Entity {
 
 	public void addGoods(Goods goods) {
 		goodsList.add(goods);
+	}
+
+	public void addEmptyGoods(Goods goods) {
+		emptyGoods = goods;
+		goodsList.add(emptyGoods);
+	}
+
+	public void deleEmptyGoods() {
+		goodsList.remove(emptyGoods);
+		emptyGoods = null;
+	}
+
+	public List<Goods> getGoods() {
+		return goodsList;
 	}
 
 	public float getOrderPrice() {

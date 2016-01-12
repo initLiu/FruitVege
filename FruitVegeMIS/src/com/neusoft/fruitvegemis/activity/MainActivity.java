@@ -63,6 +63,9 @@ public class MainActivity extends BaseActivity {
 		curPos = -1;
 		currentAccout = BaseApplication.mBaseApplication.getCurrentAccount();
 		List<String> items = new ArrayList<String>();
+		if(currentAccout==null){
+			BaseApplication.mBaseApplication.getAppInterface().exit();
+		}
 		if (currentAccout.getType() == 0) {
 			for (int id : drawerItems_buyer) {
 				items.add(getResources().getString(id));
@@ -121,12 +124,13 @@ public class MainActivity extends BaseActivity {
 			getFragmentManager()
 					.beginTransaction()
 					.replace(R.id.content_frame, OrderFragment.getInstance(),
-							MainFragment.TAG).commitAllowingStateLoss();
+							OrderFragment.TAG).commitAllowingStateLoss();
+			break;
 		case 2:
 			getFragmentManager()
 					.beginTransaction()
 					.replace(R.id.content_frame, BillFragment.getInstance(),
-							MainFragment.TAG).commitAllowingStateLoss();
+							BillFragment.TAG).commitAllowingStateLoss();
 			break;
 		default:
 			break;
@@ -147,7 +151,7 @@ public class MainActivity extends BaseActivity {
 			getFragmentManager()
 					.beginTransaction()
 					.replace(R.id.content_frame, BillFragment.getInstance(),
-							MainFragment.TAG).commitAllowingStateLoss();
+							BillFragment.TAG).commitAllowingStateLoss();
 			break;
 		default:
 			break;
