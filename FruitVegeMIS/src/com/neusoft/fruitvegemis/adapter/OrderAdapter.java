@@ -42,6 +42,15 @@ public class OrderAdapter extends BaseExpandableListAdapter implements
 		notifyDataSetChanged();
 	}
 
+	public void updateUnCommitOrder(String oid) {
+		if (orders.containsKey(oid)) {
+			Order order = orders.get(oid);
+			order.orderState = OrderState.commit;
+			order.deleEmptyGoods();
+			notifyDataSetChanged();
+		}
+	}
+
 	@Override
 	public int getGroupCount() {
 		return oids.size();

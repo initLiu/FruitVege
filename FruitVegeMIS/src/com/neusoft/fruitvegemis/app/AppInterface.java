@@ -13,6 +13,7 @@ public class AppInterface {
 
 	private FruitDBManagerFactory dmFactory;
 	private GoodsHandler mGoodsHandler;
+	private OrderHandler mOrderHandler;
 
 	public static final int FRUITVG = 0;
 
@@ -38,6 +39,13 @@ public class AppInterface {
 			mGoodsHandler = new GoodsHandler(mContext);
 		}
 		return mGoodsHandler;
+	}
+	
+	public BusinessHandler getOrderHandler() {
+		if (mOrderHandler == null) {
+			mOrderHandler = new OrderHandler(mContext);
+		}
+		return mOrderHandler;
 	}
 
 	public Manager getManager(int name) {

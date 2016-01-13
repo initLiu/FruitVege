@@ -8,7 +8,7 @@ import com.neusoft.fruitvegemis.persistence.SQLiteDatabase;
 import com.neusoft.fruitvegemis.persistence.SQLiteOpenHelper;
 
 public class DBManager {
-	public static final String TAG="DBManager";
+	public static final String TAG = "DBManager";
 	private SQLiteOpenHelper dbHelper;
 	private SQLiteDatabase db;
 
@@ -43,6 +43,15 @@ public class DBManager {
 			db = dbHelper.getWritableDatabase();
 		}
 		return db.insert(table, values);
+	}
+
+	public long update(String table, ContentValues values, String whereClause,
+			String[] whereArgs) {
+		Log.e(TAG, "update");
+		if (db == null) {
+			db = dbHelper.getWritableDatabase();
+		}
+		return db.update(table, values, whereClause, whereArgs);
 	}
 
 	public Cursor rawQuery(String sql, String[] selectionArgs) {

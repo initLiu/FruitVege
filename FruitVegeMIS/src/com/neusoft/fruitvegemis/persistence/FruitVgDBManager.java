@@ -122,6 +122,9 @@ public class FruitVgDBManager extends Observable implements Manager {
 						case BaseQueueItem.QUEUE_ITEM_ACTION_INSERT:
 							dm.insert(queueItem);
 							break;
+						case BaseQueueItem.QUEUE_ITEM_ACTION_UPDATE:
+							dm.update(queueItem);
+							break;
 						default:
 							break;
 						}
@@ -205,9 +208,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 			Order order = dm.queryOrder(orderid);
 			order.orderState = records.get(i).ostate;
-			if (order.orderState == OrderState.unCommit) {
-				order.addEmptyGoods(new Goods());// 添加一个空商品，在构造orderadapter的时候用到
-			}
 			order.orderdate = records.get(i).odate;
 			orderMap.put(orderid, order);
 		}
@@ -222,6 +222,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 		if (unCommitOrder == null) {
 			unCommitOrder = new Order();
 			unCommitOrder.orderState = Order.OrderState.unCommit;
+			unCommitOrder.addEmptyGoods(new Goods());
 			addUserOrder(unCommitOrder);
 			orderMap.put(unCommitOrder.orderId, unCommitOrder);
 		}
@@ -280,6 +281,34 @@ public class FruitVgDBManager extends Observable implements Manager {
 		});
 	}
 
+	public void commitOrder(String oid) {
+		if (unCommitOrder != null && unCommitOrder.orderId.equals(oid)) {
+			if (dm == null) {
+				dm = (FruitDBManager) app.getDBManagerFactory()
+						.createFruitDBManager();
+			}
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String date = df.format(new Date());
+
+			ContentValues values = new ContentValues();
+			values.put(AppConstants.TBUOrder.Cloum.odate, date);
+			values.put(AppConstants.TBUOrder.Cloum.ostate,
+					OrderState.commit.ordinal());
+
+			addDataQueue(AppConstants.TBUOrder.name, null, values,
+					AppConstants.TBUOrder.Cloum.oid + "=?",
+					new String[] { oid },
+					BaseQueueItem.QUEUE_ITEM_ACTION_UPDATE);
+
+			unCommitOrder = null;
+			if (orderMap.contains(oid)) {
+				orderMap.get(oid).deleEmptyGoods();
+			}
+
+			app.getOrderHandler().onReceive(oid);
+		}
+	}
+
 	public void addSellerGoods(final String gname, final float price,
 			final byte[] bytes) {
 		if (dm == null) {
@@ -304,15 +333,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 				app.getGoodsHandler().onReceive(record);
 			}
 		});
-	}
-
-	public void commitOrder(String oid) {
-		if (unCommitOrder != null && unCommitOrder.orderId.equals(oid)) {
-			if (dm == null) {
-				dm = (FruitDBManager) app.getDBManagerFactory()
-						.createFruitDBManager();
-			}
-		}
 	}
 
 	public void addDataQueue(String _tableName, Entity _item,

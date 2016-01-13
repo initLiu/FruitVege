@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.speech.tts.Voice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,9 @@ import com.neusoft.fruitvegemis.R;
 import com.neusoft.fruitvegemis.adapter.OrderAdapter;
 import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
-import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.app.OrderObserver;
 import com.neusoft.fruitvegemis.datapool.Order;
+import com.neusoft.fruitvegemis.datapool.Order.OrderState;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
 
 public class OrderFragment extends Fragment implements CommitOrderListener {
@@ -47,6 +47,19 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 		}
 	};
 
+	private OrderObserver orderObserver = new OrderObserver() {
+
+		@Override
+		protected void updateUI(String oid) {
+			if (orders.containsKey(oid)) {
+				Order order = orders.get(oid);
+				order.orderState = OrderState.commit;
+				order.deleEmptyGoods();
+				mAdapter.updateUnCommitOrder(oid);
+			}
+		}
+	};
+
 	public static OrderFragment getInstance() {
 		OrderFragment fragment = new OrderFragment();
 		return fragment;
@@ -63,6 +76,7 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_order, null);
+		BaseApplication.getBaseApplication().addObserver(orderObserver);
 		return view;
 	}
 
@@ -96,6 +110,7 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 			loadOrderTask.cancel(true);
 			loadOrderTask = null;
 		}
+		BaseApplication.getBaseApplication().removeObserver(orderObserver);
 	}
 
 	private class LoadOrderTask extends AsyncTask<Void, Void, Void> {
@@ -117,9 +132,10 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 
 	@Override
 	public void commitOrder(String oid) {
-		if(orders.containsKey(oid)){
+		if (orders.containsKey(oid)) {
 			FruitVgDBManager fVgDBManager = (FruitVgDBManager) mApp
 					.getManager(AppInterface.FRUITVG);
+			fVgDBManager.commitOrder(oid);
 		}
 	}
 }

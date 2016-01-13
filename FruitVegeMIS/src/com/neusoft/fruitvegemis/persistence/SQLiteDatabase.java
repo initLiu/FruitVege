@@ -69,4 +69,10 @@ public class SQLiteDatabase {
 		Log.e(TAG, "insert");
 		return db.insert(table, null, values);
 	}
+
+	public long update(String table, ContentValues values, String whereClause,
+			String[] whereArgs) {
+		Log.e(TAG, "update");
+		return db.update(table, values, whereClause, whereArgs);
+	}
 }

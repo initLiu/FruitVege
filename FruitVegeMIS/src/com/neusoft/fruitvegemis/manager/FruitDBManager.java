@@ -29,6 +29,12 @@ public class FruitDBManager extends DBManager {
 		insert(item.tableName, item.contentValues);
 	}
 
+	public void update(SGoodsqueueItem item) {
+		Log.e(TAG, "update");
+		update(item.tableName, item.contentValues, item.whereClause,
+				item.whereArgs);
+	}
+
 	public List<SGoodsRecord> rawQuerySGoods(String sql, String[] selectionArgs) {
 		Cursor cursor = rawQuery(sql, selectionArgs);
 		List<SGoodsRecord> results = new ArrayList<SGoodsRecord>();
@@ -56,7 +62,8 @@ public class FruitDBManager extends DBManager {
 		String selection = AppConstants.TBUOrder.Cloum.uname + "=?";
 		String[] selectionArgs = { BaseApplication.getBaseApplication()
 				.getCurrentAccount().getUin() };
-		Cursor cursor = query(table, null, selection, selectionArgs, null, null, null);
+		Cursor cursor = query(table, null, selection, selectionArgs, null,
+				null, null);
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			do {

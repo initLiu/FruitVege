@@ -25,12 +25,18 @@ public class Order extends Entity {
 	}
 
 	public void addGoods(Goods goods) {
+		Goods tmp = emptyGoods;
+		deleEmptyGoods();
 		goodsList.add(goods);
+		addEmptyGoods(tmp);
+
 	}
 
 	public void addEmptyGoods(Goods goods) {
-		emptyGoods = goods;
-		goodsList.add(emptyGoods);
+		if (emptyGoods == null) {
+			emptyGoods = goods;
+			goodsList.add(emptyGoods);
+		}
 	}
 
 	public void deleEmptyGoods() {
