@@ -1,9 +1,10 @@
 package com.neusoft.fruitvegemis.adapter;
 
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -28,7 +29,8 @@ public class OrderAdapter extends BaseExpandableListAdapter implements
 	public static final String TAG = "OrderAdapter";
 	private Context mContext;
 	private Map<String, Order> orders = new HashMap<String, Order>();
-	private Set<String> oids = new HashSet<String>();
+	private Set<String> oids = new TreeSet<String>(new CustomComparator());
+
 	private CommitOrderListener mListener;
 
 	public OrderAdapter(Context context, CommitOrderListener listener) {
@@ -188,5 +190,13 @@ public class OrderAdapter extends BaseExpandableListAdapter implements
 		public TextView gprice;
 		public TextView sname;
 		public Button commit;
+	}
+	
+	class CustomComparator implements Comparator<String> {
+
+		@Override
+		public int compare(String lhs, String rhs) {
+			return lhs.compareTo(rhs) > 0 ? -1 : 1;
+		}
 	}
 }
