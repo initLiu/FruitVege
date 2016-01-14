@@ -87,10 +87,6 @@ public class FruitVgDBManager extends Observable implements Manager {
 	 * 批量存储消息到database
 	 */
 	public void transSaveToDatabase() {
-		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
-		}
 		transSaveToDatabase(dm);
 	}
 
@@ -422,7 +418,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	@Override
 	public void destroy() {
-		isDestroy = false;
+		isDestroy = true;
 		subHandler.post(new Runnable() {
 
 			@Override

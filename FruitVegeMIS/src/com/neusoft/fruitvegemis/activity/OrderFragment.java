@@ -2,6 +2,7 @@ package com.neusoft.fruitvegemis.activity;
 
 import java.util.Map;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.neusoft.fruitvegemis.app.OrderObserver;
 import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.datapool.Order.OrderState;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import com.neusoft.fruitvegemis.utils.DialogUtils;
 
 public class OrderFragment extends Fragment implements CommitOrderListener {
 	public static final String TAG = "OrderFragment";
@@ -30,6 +32,7 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 	private AppInterface mApp;
 	private Map<String, Order> orders;
 	private LoadOrderTask loadOrderTask;
+	private Dialog mDialog;
 
 	private static final int REFRESH_ORDER_LIST = 0;
 	private Handler uiHandler = new Handler(Looper.getMainLooper()) {
@@ -51,6 +54,9 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 
 		@Override
 		protected void updateUI(String oid) {
+			if (mDialog != null && mDialog.isShowing()) {
+				mDialog.dismiss();
+			}
 			if (orders.containsKey(oid)) {
 				Order order = orders.get(oid);
 				order.orderState = OrderState.commit;
@@ -113,6 +119,14 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 		BaseApplication.getBaseApplication().removeObserver(orderObserver);
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (mDialog != null && mDialog.isShowing()) {
+			mDialog.dismiss();
+		}
+	}
+
 	private class LoadOrderTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -133,6 +147,8 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 	@Override
 	public void commitOrder(String oid) {
 		if (orders.containsKey(oid)) {
+			mDialog = DialogUtils.creatLoadingDialog(getActivity());
+			mDialog.show();
 			FruitVgDBManager fVgDBManager = (FruitVgDBManager) mApp
 					.getManager(AppInterface.FRUITVG);
 			fVgDBManager.commitOrder(oid);
