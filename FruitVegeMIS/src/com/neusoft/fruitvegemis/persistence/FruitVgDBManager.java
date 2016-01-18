@@ -203,8 +203,12 @@ public class FruitVgDBManager extends Observable implements Manager {
 			uOrderMap.put(orderid, records.get(i));
 
 			Order order = dm.queryOrder(orderid);
-			order.orderState = records.get(i).ostate;
 			order.orderdate = records.get(i).odate;
+			order.orderState = records.get(i).ostate;
+			if (order.orderState == OrderState.unCommit) {
+				order.addEmptyGoods(new Goods());
+				unCommitOrder = order;
+			}
 			orderMap.put(orderid, order);
 		}
 	}
@@ -433,5 +437,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 				}
 			}
 		}
+		uOrderMap.clear();
+		orderMap.clear();
 	}
 }

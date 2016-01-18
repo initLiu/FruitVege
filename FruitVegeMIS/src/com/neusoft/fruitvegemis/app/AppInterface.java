@@ -86,7 +86,6 @@ public class AppInterface {
 		for (Manager manager : managers) {
 			if (manager != null) {
 				manager.destroy();
-				manager = null;
 			}
 		}
 	}

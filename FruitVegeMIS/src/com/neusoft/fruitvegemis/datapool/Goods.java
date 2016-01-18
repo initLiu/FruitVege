@@ -7,7 +7,7 @@ public class Goods {
 	public final byte[] gpicture;
 	public final int item_type;
 	public static final int ITEM_TYPE_GOODS = 0;
-	public static final int ITEM_TYPE_COMMIT = 1;;
+	public static final int ITEM_TYPE_COMMIT = 1;
 
 	public Goods(String _gname, float _gprice, String _sname, byte[] _gpicture) {
 		gname = _gname;

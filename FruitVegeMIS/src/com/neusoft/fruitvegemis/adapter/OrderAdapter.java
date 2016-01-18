@@ -191,7 +191,7 @@ public class OrderAdapter extends BaseExpandableListAdapter implements
 		public TextView sname;
 		public Button commit;
 	}
-	
+
 	class CustomComparator implements Comparator<String> {
 
 		@Override
