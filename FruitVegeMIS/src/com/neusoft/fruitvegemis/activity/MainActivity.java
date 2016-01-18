@@ -3,6 +3,7 @@ package com.neusoft.fruitvegemis.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -35,9 +36,15 @@ public class MainActivity extends BaseActivity {
 
 	private static final int[] drawerItems_seller = new int[] {
 			R.string.draweritem_main, R.string.draweritem_bill };
+	public static int DRAWERITEM_BUYER_MAIN = 0;
+	public static int DRAWERITEM_BUYER_ORDER = 1;
+	public static int DRAWERITEM_BUYER_BILL = 2;
+
+	public static int DRAWERITEM_SELLER_MAIN = 0;
+	public static int DRAWERITEM_SELLER_BILL = 1;
 
 	private User currentAccout;
-	private int curPos = -1,clickPos = -1;
+	private int curPos = -1, clickPos = -1;
 	private String tmpTitle;
 
 	@Override
@@ -59,11 +66,23 @@ public class MainActivity extends BaseActivity {
 		getActionBar().setTitle(title);
 	}
 
+	public String getDrawerTitle(int drawerPos) {
+		try {
+			if (currentAccout.getType() == 0) {
+				return getString(drawerItems_buyer[drawerPos]);
+			} else {
+				return getString(drawerItems_seller[drawerPos]);
+			}
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
 	private void initData() {
 		curPos = -1;
 		currentAccout = BaseApplication.mBaseApplication.getCurrentAccount();
 		List<String> items = new ArrayList<String>();
-		if(currentAccout==null){
+		if (currentAccout == null) {
 			BaseApplication.mBaseApplication.getAppInterface().exit();
 		}
 		if (currentAccout.getType() == 0) {
@@ -110,6 +129,15 @@ public class MainActivity extends BaseActivity {
 		curPos = position;
 	}
 
+	public void openFragment(Fragment fragment, String tag, int position,
+			String title) {
+		getFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, fragment, tag).commit();
+		setTitle(title);
+		curPos = position;
+
+	}
+
 	private void setSelectItemBuyer(String title, int position) {
 		setTitle(title);
 		switch (position) {
@@ -123,8 +151,9 @@ public class MainActivity extends BaseActivity {
 		case 1:
 			getFragmentManager()
 					.beginTransaction()
-					.replace(R.id.content_frame, OrderFragment.getInstance(),
-							OrderFragment.TAG).commitAllowingStateLoss();
+					.replace(R.id.content_frame,
+							OrderFragment.getInstance(null), OrderFragment.TAG)
+					.commitAllowingStateLoss();
 			break;
 		case 2:
 			getFragmentManager()
@@ -242,5 +271,9 @@ public class MainActivity extends BaseActivity {
 			break;
 		}
 		return false;
+	}
+
+	public User getCurrentUser() {
+		return currentAccout;
 	}
 }

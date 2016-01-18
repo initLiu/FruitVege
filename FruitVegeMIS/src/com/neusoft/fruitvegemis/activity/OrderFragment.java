@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 	private Map<String, Order> orders;
 	private LoadOrderTask loadOrderTask;
 	private Dialog mDialog;
+	private String expandedOid;
 
 	private static final int REFRESH_ORDER_LIST = 0;
 	private Handler uiHandler = new Handler(Looper.getMainLooper()) {
@@ -66,8 +69,13 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 		}
 	};
 
-	public static OrderFragment getInstance() {
+	public static OrderFragment getInstance(String orderId) {
 		OrderFragment fragment = new OrderFragment();
+		if (orderId != null) {
+			Bundle bundle = new Bundle();
+			bundle.putString("orderId", orderId);
+			fragment.setArguments(bundle);
+		}
 		return fragment;
 	}
 
@@ -76,6 +84,9 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		mApp = BaseApplication.mBaseApplication.getAppInterface();
+		if (getArguments() != null) {
+			expandedOid = getArguments().getString("orderId");
+		}
 	}
 
 	@Override
@@ -106,6 +117,19 @@ public class OrderFragment extends Fragment implements CommitOrderListener {
 
 	private void refreshList() {
 		mAdapter.setData(orders);
+		if (!TextUtils.isEmpty(expandedOid)) {
+			int groupPosition = mAdapter.getGroupPosition(expandedOid);
+			try {
+				String tmp = (String) mAdapter.getGroup(groupPosition);
+				if (tmp.equals(expandedOid)) {
+					mOrderList.expandGroup(groupPosition);
+				}
+			} catch (Exception e) {
+				Log.w(TAG, "get group postion error");
+			} finally {
+				expandedOid = null;
+			}
+		}
 	}
 
 	@Override

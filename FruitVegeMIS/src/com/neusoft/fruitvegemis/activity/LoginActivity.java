@@ -1,17 +1,8 @@
 package com.neusoft.fruitvegemis.activity;
 
-import com.neusoft.fruitvegemis.R;
-import com.neusoft.fruitvegemis.app.AppInterface;
-import com.neusoft.fruitvegemis.app.BaseApplication;
-import com.neusoft.fruitvegemis.app.User;
-import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
-import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout;
-import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout.onSizeChangedListenner;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +11,14 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.app.AppInterface;
+import com.neusoft.fruitvegemis.app.BaseApplication;
+import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout;
+import com.neusoft.fruitvegemis.widget.InputMethodRelativeLayout.onSizeChangedListenner;
 
 public class LoginActivity extends BaseActivity implements OnClickListener,
 		onSizeChangedListenner {
@@ -98,8 +97,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public void onSizeChange(boolean isOpen, int preH, int curH) {
-		Log.e("Test", "LoginActivity onSizeChange isOpen:" + isOpen + ",preH="
-				+ preH + ",curH=" + curH);
 		if (isOpen) {// 为了显示登录按钮我ui向上推一下
 			int[] location = new int[2];
 			loginBtn.getLocationInWindow(location);
@@ -107,8 +104,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
 			rootLayout.getLocationInWindow(location);
 			int rootY = location[1];
 			int paddingY = loginBtnY - rootY + loginBtn.getHeight() - curH;
-			Log.e("Test", "LoginActivity onSizeChange loginBtnY=" + loginBtnY
-					+ ",rootY=" + rootY + ",paddingY=" + paddingY);
 			if (paddingY > 0) {
 				loginScrollLayaout.setPadding(
 						loginScrollLayaout.getPaddingLeft(),

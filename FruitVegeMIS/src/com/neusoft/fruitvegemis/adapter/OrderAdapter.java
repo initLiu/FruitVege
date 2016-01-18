@@ -89,6 +89,17 @@ public class OrderAdapter extends BaseExpandableListAdapter implements
 		return childPosition;
 	}
 
+	public int getGroupPosition(String orderId) {
+		Object[] arrOid = oids.toArray();
+		int len = arrOid.length;
+		for (int i = 0; i < len; i++) {
+			if (arrOid[i].equals(orderId)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	@Override
 	public boolean hasStableIds() {
 		// TODO Auto-generated method stub

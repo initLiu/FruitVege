@@ -1,9 +1,12 @@
 package com.neusoft.fruitvegemis.persistence;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Observable;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -191,12 +194,51 @@ public class FruitVgDBManager extends Observable implements Manager {
 		return orderMap;
 	}
 
+	public List<Order> getUserCommittedOrder() {
+		getUserOrder();
+		List<Order> orders = new ArrayList<Order>();
+		for (Entry<String, Order> entry : orderMap.entrySet()) {
+			orders.add(entry.getValue());
+		}
+
+		if (unCommitOrder != null) {
+			if (orderMap.containsKey(unCommitOrder.orderId)) {
+				orders.remove(unCommitOrder);
+			}
+		}
+		return orders;
+	}
+
+	public List<Order> getUserCommitOrderForSeller(String seller) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory()
+					.createFruitDBManager();
+		}
+		List<Order> ret = new ArrayList<Order>();
+
+		List<UOrderRecord> records = dm.queryUOrder(AppConstants.TBUOrder.name);
+		int len = records.size();
+		for (int i = 0; i < len; i++) {
+			String orderid = records.get(i).oid;
+			if (records.get(i).ostate == OrderState.unCommit) {
+				continue;
+			}
+			Order order = dm.queryOrderbySeller(orderid, seller);
+			order.orderdate = records.get(i).odate;
+			order.orderState = records.get(i).ostate;
+			order.addEmptyGoods(new Goods());
+			ret.add(order);
+		}
+		return ret;
+	}
+
 	private void initUserOrder() {
 		if (dm == null) {
 			dm = (FruitDBManager) app.getDBManagerFactory()
 					.createFruitDBManager();
 		}
-		List<UOrderRecord> records = dm.queryUOrder(AppConstants.TBUOrder.name);
+		List<UOrderRecord> records = dm
+				.queryCurrentUserUOrder(AppConstants.TBUOrder.name);
 		int len = records.size();
 		for (int i = 0; i < len; i++) {
 			String orderid = records.get(i).oid;

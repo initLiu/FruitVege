@@ -11,23 +11,21 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import com.neusoft.fruitvegemis.R;
 import com.neusoft.fruitvegemis.adapter.BillAdapter;
-import com.neusoft.fruitvegemis.adapter.BillAdapter.BillItemHolder;
+import com.neusoft.fruitvegemis.adapter.BillAdapterSeller;
 import com.neusoft.fruitvegemis.app.AppInterface;
 import com.neusoft.fruitvegemis.app.BaseApplication;
 import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
 
-public class BillFragment extends Fragment implements OnItemClickListener {
+public class BillFragmentSeller extends Fragment {
 	public static final String TAG = "BillFragment";
 
-	private ListView mListView;
-	private BillAdapter mAdapter;
+	private ExpandableListView mListView;
+	private BillAdapterSeller mAdapter;
 	private LoadBillTask mBillTask;
 	private AppInterface mApp;
 	private List<Order> orders;
@@ -48,8 +46,8 @@ public class BillFragment extends Fragment implements OnItemClickListener {
 		}
 	};
 
-	public static BillFragment getInstance() {
-		BillFragment fragment = new BillFragment();
+	public static BillFragmentSeller getInstance() {
+		BillFragmentSeller fragment = new BillFragmentSeller();
 		return fragment;
 	}
 
@@ -62,17 +60,17 @@ public class BillFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_bill, null);
+		View view = inflater.inflate(R.layout.fragment_bill_seller, null);
 		return view;
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mListView = (ListView) view.findViewById(R.id.fragment_bill_list);
-		mListView.setOnItemClickListener(this);
+		mListView = (ExpandableListView) view
+				.findViewById(R.id.fragment_bill_list_seller);
 
-		mAdapter = new BillAdapter(getActivity());
+		mAdapter = new BillAdapterSeller(getActivity());
 		mListView.setAdapter(mAdapter);
 
 		mBillTask = new LoadBillTask();
@@ -88,7 +86,9 @@ public class BillFragment extends Fragment implements OnItemClickListener {
 		protected Void doInBackground(Void... params) {
 			FruitVgDBManager fVgDBManager = (FruitVgDBManager) mApp
 					.getManager(AppInterface.FRUITVG);
-			orders = fVgDBManager.getUserCommittedOrder();
+			String seller = ((MainActivity) getActivity()).getCurrentUser()
+					.getUin();
+			orders = fVgDBManager.getUserCommitOrderForSeller(seller);
 			return null;
 		}
 
@@ -98,18 +98,5 @@ public class BillFragment extends Fragment implements OnItemClickListener {
 			Message msg = uiHandler.obtainMessage(REFRESH_ORDER_LIST);
 			uiHandler.sendMessage(msg);
 		}
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		BillItemHolder itemHolder = (BillItemHolder) view.getTag();
-		String oid = itemHolder.oid;
-
-		MainActivity activity = (MainActivity) getActivity();
-		String title = activity
-				.getDrawerTitle(MainActivity.DRAWERITEM_BUYER_ORDER);
-		activity.openFragment(OrderFragment.getInstance(oid),
-				OrderFragment.TAG, MainActivity.DRAWERITEM_BUYER_ORDER, title);
 	}
 }

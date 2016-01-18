@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#EDEDED" >
-
+    
     <ExpandableListView
-        android:id="@+id/orderList"
+        android:id="@+id/fragment_bill_list_seller"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
         android:cacheColorHint="@null"
