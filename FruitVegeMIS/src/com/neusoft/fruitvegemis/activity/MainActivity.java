@@ -179,8 +179,8 @@ public class MainActivity extends BaseActivity {
 		case 1:
 			getFragmentManager()
 					.beginTransaction()
-					.replace(R.id.content_frame, BillFragment.getInstance(),
-							BillFragment.TAG).commitAllowingStateLoss();
+					.replace(R.id.content_frame, BillFragmentSeller.getInstance(),
+							BillFragmentSeller.TAG).commitAllowingStateLoss();
 			break;
 		default:
 			break;

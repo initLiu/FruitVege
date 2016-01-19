@@ -174,12 +174,12 @@ public class UploadDialogActivity extends BaseActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		bitmap = ((BitmapDrawable) phView.getDrawable()).getBitmap();
-		if (bitmap != null && !bitmap.isRecycled()) {
-			bitmap.recycle();
-		}
-		bitmap = null;
-		phView.setImageBitmap(null);
+//		bitmap = ((BitmapDrawable) phView.getDrawable()).getBitmap();
+//		if (bitmap != null && !bitmap.isRecycled()) {
+//			bitmap.recycle();
+//		}
+//		bitmap = null;
+//		phView.setImageBitmap(null);
 	}
 
 	@Override

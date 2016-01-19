@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Textview
+    <TextView
         android:id="@+id/item_bills_seller_child_odate"
         style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Textview
+    <TextView
         android:id="@+id/item_bills_seller_child_oprice"
         style="@style/TextStyle"
         android:layout_width="wrap_content"

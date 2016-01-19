@@ -22,7 +22,7 @@ import com.neusoft.fruitvegemis.datapool.Order;
 import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
 
 public class BillFragmentSeller extends Fragment {
-	public static final String TAG = "BillFragment";
+	public static final String TAG = "BillFragmentSeller";
 
 	private ExpandableListView mListView;
 	private BillAdapterSeller mAdapter;

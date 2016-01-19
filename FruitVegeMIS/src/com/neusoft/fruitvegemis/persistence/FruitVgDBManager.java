@@ -226,6 +226,9 @@ public class FruitVgDBManager extends Observable implements Manager {
 			Order order = dm.queryOrderbySeller(orderid, seller);
 			order.orderdate = records.get(i).odate;
 			order.orderState = records.get(i).ostate;
+			if(order.getGoods().size()==0){
+				continue;
+			}
 			order.addEmptyGoods(new Goods());
 			ret.add(order);
 		}

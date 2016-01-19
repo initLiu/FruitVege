@@ -89,7 +89,7 @@ public class BillAdapterSeller extends BaseExpandableListAdapter {
 		TextView textView = (TextView) convertView
 				.findViewById(R.id.item_bills_seller_group_oid);
 		Order order = (Order) getGroup(groupPosition);
-		textView.setText(order.orderId);
+		textView.setText("订单号:"+order.orderId);
 		return convertView;
 	}
 
@@ -130,7 +130,7 @@ public class BillAdapterSeller extends BaseExpandableListAdapter {
 				BillsSellerItemHolder itemHolder = new BillsSellerItemHolder();
 				itemHolder.odate = (TextView) convertView
 						.findViewById(R.id.item_bills_seller_child_odate);
-				itemHolder.odate = (TextView) convertView
+				itemHolder.oprice = (TextView) convertView
 						.findViewById(R.id.item_bills_seller_child_oprice);
 
 				convertView.setTag(itemHolder);

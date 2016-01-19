@@ -7,6 +7,7 @@
         android:id="@+id/item_bills_seller_group_oid"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_marginLeft="30dp"
         style="@style/TextStyle"/>
 
 
