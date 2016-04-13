@@ -115,14 +115,16 @@ public class FruitVgDBManager extends Observable implements Manager {
 					for (SGoodsqueueItem queueItem : items) {
 						++optCount;
 						String tableName = queueItem.tableName;
-						Log.e(TAG, "transSaveToDatabase count=" + optCount
-								+ ",tableName=" + tableName);
+						Log.e(TAG, "transSaveToDatabase count=" + optCount + ",tableName=" + tableName);
 						switch (queueItem.action) {
 						case BaseQueueItem.QUEUE_ITEM_ACTION_INSERT:
 							dm.insert(queueItem);
 							break;
 						case BaseQueueItem.QUEUE_ITEM_ACTION_UPDATE:
 							dm.update(queueItem);
+							break;
+						case BaseQueueItem.QUEUE_ITEM_ACTION_DELETE:
+							dm.delete(queueItem);
 							break;
 						default:
 							break;
@@ -140,8 +142,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public List<SGoodsRecord> querySGoods() {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 		String sql = "select * from " + AppConstants.TBSGoods.name;
 		return dm.rawQuerySGoods(sql, null);
@@ -149,31 +150,25 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public List<SGoodsRecord> querySGoods(String curUin) {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
-		String sql = "select * from " + AppConstants.TBSGoods.name + " where "
-				+ AppConstants.TBSGoods.Cloum.sname + "= ?";
+		String sql = "select * from " + AppConstants.TBSGoods.name + " where " + AppConstants.TBSGoods.Cloum.sname
+				+ "= ?";
 		return dm.rawQuerySGoods(sql, new String[] { curUin });
 	}
 
 	private void loadUser() {
 		Log.e(TAG, "loaduser");
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
-		Cursor cursor = dm.query(TBUser.name, null, null, null, null, null,
-				null);
+		Cursor cursor = dm.query(TBUser.name, null, null, null, null, null, null);
 		if (cursor != null && cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			do {
-				String uname = cursor.getString(cursor
-						.getColumnIndex(TBUser.Cloum.uname));
-				String pwd = cursor.getString(cursor
-						.getColumnIndex(TBUser.Cloum.password));
-				int type = cursor.getInt(cursor
-						.getColumnIndex(TBUser.Cloum.type));
+				String uname = cursor.getString(cursor.getColumnIndex(TBUser.Cloum.uname));
+				String pwd = cursor.getString(cursor.getColumnIndex(TBUser.Cloum.password));
+				int type = cursor.getInt(cursor.getColumnIndex(TBUser.Cloum.type));
 				User user = new User(uname, pwd, type);
 				Log.e(TAG, "loaduser uin=" + uname);
 				synchronized (userMap) {
@@ -185,8 +180,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public ConcurrentHashMap<String, Order> getUserOrder() {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 		if (orderMap.isEmpty()) {
 			initUserOrder();
@@ -211,8 +205,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public List<Order> getUserCommitOrderForSeller(String seller) {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 		List<Order> ret = new ArrayList<Order>();
 
@@ -226,7 +219,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 			Order order = dm.queryOrderbySeller(orderid, seller);
 			order.orderdate = records.get(i).odate;
 			order.orderState = records.get(i).ostate;
-			if(order.getGoods().size()==0){
+			if (order.getGoods().size() == 0) {
 				continue;
 			}
 			order.addEmptyGoods(new Goods());
@@ -237,11 +230,9 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	private void initUserOrder() {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
-		List<UOrderRecord> records = dm
-				.queryCurrentUserUOrder(AppConstants.TBUOrder.name);
+		List<UOrderRecord> records = dm.queryCurrentUserUOrder(AppConstants.TBUOrder.name);
 		int len = records.size();
 		for (int i = 0; i < len; i++) {
 			String orderid = records.get(i).oid;
@@ -260,8 +251,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public void addGoods2Order(Goods goods) {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 
 		if (unCommitOrder == null) {
@@ -289,11 +279,11 @@ public class FruitVgDBManager extends Observable implements Manager {
 				values.put(AppConstants.TBOrder.Cloum.gprice, goods.gprice);
 				values.put(AppConstants.TBOrder.Cloum.gpicture, goods.gpicture);
 
-				OrderRecord record = new OrderRecord(unCommitOrder.orderId,
-						goods.sname, goods.gname, goods.gprice, goods.gpicture);
+				OrderRecord record = new OrderRecord(unCommitOrder.orderId, goods.sname, goods.gname, goods.gprice,
+						goods.gpicture);
 
-				addDataQueue(AppConstants.TBOrder.name, record, values, null,
-						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+				addDataQueue(AppConstants.TBOrder.name, record, values, null, null,
+						BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 			}
 		});
 	}
@@ -303,25 +293,21 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 			@Override
 			public void run() {
-				User user = BaseApplication.getBaseApplication()
-						.getCurrentAccount();
+				User user = BaseApplication.getBaseApplication().getCurrentAccount();
 
-				SimpleDateFormat df = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String date = df.format(new Date());
 
 				ContentValues values = new ContentValues();
 				values.put(AppConstants.TBUOrder.Cloum.odate, date);
 				values.put(AppConstants.TBUOrder.Cloum.oid, order.orderId);
-				values.put(AppConstants.TBUOrder.Cloum.oprice,
-						order.getOrderPrice());
-				values.put(AppConstants.TBUOrder.Cloum.ostate,
-						order.orderState.ordinal());
+				values.put(AppConstants.TBUOrder.Cloum.oprice, order.getOrderPrice());
+				values.put(AppConstants.TBUOrder.Cloum.ostate, order.orderState.ordinal());
 				values.put(AppConstants.TBUOrder.Cloum.type, user.getType());
 				values.put(AppConstants.TBUOrder.Cloum.uname, user.getUin());
 
-				addDataQueue(AppConstants.TBUOrder.name, null, values, null,
-						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+				addDataQueue(AppConstants.TBUOrder.name, null, values, null, null,
+						BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 			}
 		});
 	}
@@ -329,21 +315,17 @@ public class FruitVgDBManager extends Observable implements Manager {
 	public void commitOrder(String oid) {
 		if (unCommitOrder != null && unCommitOrder.orderId.equals(oid)) {
 			if (dm == null) {
-				dm = (FruitDBManager) app.getDBManagerFactory()
-						.createFruitDBManager();
+				dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 			}
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String date = df.format(new Date());
 
 			ContentValues values = new ContentValues();
 			values.put(AppConstants.TBUOrder.Cloum.odate, date);
-			values.put(AppConstants.TBUOrder.Cloum.ostate,
-					OrderState.commit.ordinal());
+			values.put(AppConstants.TBUOrder.Cloum.ostate, OrderState.commit.ordinal());
 
-			addDataQueue(AppConstants.TBUOrder.name, null, values,
-					AppConstants.TBUOrder.Cloum.oid + "=?",
-					new String[] { oid },
-					BaseQueueItem.QUEUE_ITEM_ACTION_UPDATE);
+			addDataQueue(AppConstants.TBUOrder.name, null, values, AppConstants.TBUOrder.Cloum.oid + "=?",
+					new String[] { oid }, BaseQueueItem.QUEUE_ITEM_ACTION_UPDATE);
 
 			unCommitOrder = null;
 			if (orderMap.contains(oid)) {
@@ -354,18 +336,15 @@ public class FruitVgDBManager extends Observable implements Manager {
 		}
 	}
 
-	public void addSellerGoods(final String gname, final float price,
-			final byte[] bytes) {
+	public void addSellerGoods(final String gname, final float price, final byte[] bytes) {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 		subHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				String uname = BaseApplication.mBaseApplication
-						.getCurrentAccount().getUin();
+				String uname = BaseApplication.mBaseApplication.getCurrentAccount().getUin();
 				ContentValues values = new ContentValues();
 				values.put(AppConstants.TBSGoods.Cloum.sname, uname);
 				values.put(AppConstants.TBSGoods.Cloum.gname, gname);
@@ -373,19 +352,32 @@ public class FruitVgDBManager extends Observable implements Manager {
 				values.put(AppConstants.TBSGoods.Cloum.gpicture, bytes);
 				SGoodsRecord record = new SGoodsRecord();
 				record.init(uname, gname, price, bytes);
-				addDataQueue(AppConstants.TBSGoods.name, record, values, null,
-						null, BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
+				addDataQueue(AppConstants.TBSGoods.name, record, values, null, null,
+						BaseQueueItem.QUEUE_ITEM_ACTION_INSERT);
 				app.getGoodsHandler().onReceive(record);
 			}
 		});
 	}
 
-	public void addDataQueue(String _tableName, Entity _item,
-			ContentValues _contentValues, String _whereClause,
+	public void deleteSellerGoods(final String sname, final String gname, final float price) {
+		if (dm == null) {
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
+		}
+		subHandler.post(new Runnable() {
+			public void run() {
+				addDataQueue(AppConstants.TBSGoods.name, null, null,
+						AppConstants.TBSGoods.Cloum.sname + "= ? and " + AppConstants.TBSGoods.Cloum.gname + "= ? and "
+								+ AppConstants.TBSGoods.Cloum.gprice + "= ?",
+						new String[] { sname, gname, String.valueOf(price) }, BaseQueueItem.QUEUE_ITEM_ACTION_DELETE);
+			}
+		});
+	}
+
+	public void addDataQueue(String _tableName, Entity _item, ContentValues _contentValues, String _whereClause,
 			String[] _whereArgs, int _action) {
 		Log.e(TAG, "addDataQueue tableName=" + _tableName);
-		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _item,
-				_contentValues, _whereClause, _whereArgs, _action);
+		SGoodsqueueItem queueItem = new SGoodsqueueItem(_tableName, _item, _contentValues, _whereClause, _whereArgs,
+				_action);
 		synchronized (sGoodsQueue) {
 			sGoodsQueue.add(queueItem);
 		}
@@ -423,8 +415,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 
 	public void registerUser(final String uin, final String pwd, final int type) {
 		if (dm == null) {
-			dm = (FruitDBManager) app.getDBManagerFactory()
-					.createFruitDBManager();
+			dm = (FruitDBManager) app.getDBManagerFactory().createFruitDBManager();
 		}
 		subHandler.post(new Runnable() {
 
@@ -447,8 +438,7 @@ public class FruitVgDBManager extends Observable implements Manager {
 					message.msg = sucess;
 					if (sucess) {
 						BaseApplication.mBaseApplication.setLogin(true);
-						BaseApplication.mBaseApplication
-								.setCurrentAccount(new User(uin, pwd, type));
+						BaseApplication.mBaseApplication.setCurrentAccount(new User(uin, pwd, type));
 						userMap.put(uin, new User(uin, pwd, type));
 						message.extra = "注册成功";
 					} else {

@@ -2,12 +2,29 @@ package com.neusoft.fruitvegemis.activity;
 
 import java.util.List;
 
+import org.w3c.dom.Text;
+
+import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.adapter.ImageAdapter;
+import com.neusoft.fruitvegemis.adapter.ImageAdapter.SGoodsItemHolder;
+import com.neusoft.fruitvegemis.app.AppInterface;
+import com.neusoft.fruitvegemis.app.BaseApplication;
+import com.neusoft.fruitvegemis.app.GoodsObserver;
+import com.neusoft.fruitvegemis.app.User;
+import com.neusoft.fruitvegemis.datapool.Goods;
+import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
+import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import com.neusoft.fruitvegemis.utils.CustomMenu;
+import com.neusoft.fruitvegemis.utils.CustomMenuItem;
+import com.neusoft.fruitvegemis.utils.ItemContextMenu;
+
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
+import android.text.TextUtils;
 import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -21,19 +38,11 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-
-import com.neusoft.fruitvegemis.R;
-import com.neusoft.fruitvegemis.adapter.ImageAdapter;
-import com.neusoft.fruitvegemis.adapter.ImageAdapter.SGoodsItemHolder;
-import com.neusoft.fruitvegemis.app.AppInterface;
-import com.neusoft.fruitvegemis.app.BaseApplication;
-import com.neusoft.fruitvegemis.app.GoodsObserver;
-import com.neusoft.fruitvegemis.app.User;
-import com.neusoft.fruitvegemis.datapool.Goods;
-import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
-import com.neusoft.fruitvegemis.persistence.FruitVgDBManager;
+import android.widget.TextView;
 
 public class MainFragment extends Fragment implements Callback, OnClickListener {
 
@@ -79,8 +88,7 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_main, null);
 		BaseApplication.getBaseApplication().addObserver(goodsObserver);
 		return view;
@@ -96,11 +104,48 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 			mImageAdapter = new ImageAdapter(getActivity(), this);
 		}
 		mGridView.setAdapter(mImageAdapter);
+
+		if (mUserType == 1) {
+			mGridView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					showContextMenu(view);
+					return true;
+				}
+			});
+		}
+
 		mLoadGoodsTask = new LoadGoodsTask();
 		mLoadGoodsTask.execute(null, null, null);
 
 		mShoppingCart = (ImageView) view.findViewById(R.id.shoppingCart);
 		mShoppingCart.setVisibility(View.GONE);
+	}
+
+	private void showContextMenu(View view) {
+		final SGoodsItemHolder holder = (SGoodsItemHolder) view.getTag();
+		CustomMenu menu = new CustomMenu();
+		menu.add(0, "删除");
+		ItemContextMenu.showAsDropDown(view, menu, new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (v instanceof TextView) {
+					String menuItem = ((TextView) v).getText().toString();
+					if (!TextUtils.isEmpty(menuItem) && menuItem.equals("删除")) {
+						deleteGoods(holder.sname, holder.gname, holder.gprice, holder.position);
+					}
+				}
+			}
+		});
+	}
+
+	private void deleteGoods(String sname, String gname, float gprice, int position) {
+		FruitVgDBManager dbManager = (FruitVgDBManager) BaseApplication.mBaseApplication.getAppInterface()
+				.getManager(AppInterface.FRUITVG);
+		dbManager.deleteSellerGoods(sname, gname, gprice);
+		mImageAdapter.deleteItem(position);
 	}
 
 	@Override
@@ -142,8 +187,7 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	private class LoadGoodsTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
-			FruitVgDBManager fVgDBManager = (FruitVgDBManager) mApp
-					.getManager(AppInterface.FRUITVG);
+			FruitVgDBManager fVgDBManager = (FruitVgDBManager) mApp.getManager(AppInterface.FRUITVG);
 			User user = BaseApplication.mBaseApplication.getCurrentAccount();
 			String uin = null;
 			if (mUserType == 0) {
@@ -192,20 +236,17 @@ public class MainFragment extends Fragment implements Callback, OnClickListener 
 	}
 
 	private void addGoodToOrder(SGoodsItemHolder goods) {
-		FruitVgDBManager dbManager = (FruitVgDBManager) BaseApplication.mBaseApplication
-				.getAppInterface().getManager(AppInterface.FRUITVG);
-		dbManager.addGoods2Order(new Goods(goods.gname, goods.gprice,
-				goods.sname, goods.gpicture));
+		FruitVgDBManager dbManager = (FruitVgDBManager) BaseApplication.mBaseApplication.getAppInterface()
+				.getManager(AppInterface.FRUITVG);
+		dbManager.addGoods2Order(new Goods(goods.gname, goods.gprice, goods.sname, goods.gpicture));
 	}
 
 	private void startAnimation(View v) {
 		float fromXDelta = v.getX();
 		float fromYDelta = v.getY();
 		float toXDelta = 0;
-		float toYDelta = getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth() / 2;
-		TranslateAnimation animation = new TranslateAnimation(fromXDelta,
-				toXDelta, fromYDelta, toYDelta);
+		float toYDelta = getActivity().getWindowManager().getDefaultDisplay().getWidth() / 2;
+		TranslateAnimation animation = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
 		animation.setAnimationListener(new AnimationListener() {
 
 			@Override

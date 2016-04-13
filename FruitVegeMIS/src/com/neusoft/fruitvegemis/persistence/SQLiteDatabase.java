@@ -22,8 +22,7 @@ public class SQLiteDatabase {
 		values.put(AppConstants.TBUser.Cloum.uname, uin);
 		values.put(AppConstants.TBUser.Cloum.password, password);
 		values.put(AppConstants.TBUser.Cloum.type, type);
-		return db.insert(AppConstants.TBUser.name, null, values) == -1 ? false
-				: true;
+		return db.insert(AppConstants.TBUser.name, null, values) == -1 ? false : true;
 	}
 
 	public void beginTransaction() {
@@ -50,11 +49,9 @@ public class SQLiteDatabase {
 		return cursor;
 	}
 
-	public Cursor query(String table, String[] columns, String selection,
-			String[] selectionArgs, String groupBy, String having,
-			String orderBy) {
-		return db.query(table, columns, selection, selectionArgs, groupBy,
-				having, orderBy);
+	public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy,
+			String having, String orderBy) {
+		return db.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);
 	}
 
 	public void close() {
@@ -70,9 +67,12 @@ public class SQLiteDatabase {
 		return db.insert(table, null, values);
 	}
 
-	public long update(String table, ContentValues values, String whereClause,
-			String[] whereArgs) {
+	public long update(String table, ContentValues values, String whereClause, String[] whereArgs) {
 		Log.e(TAG, "update");
 		return db.update(table, values, whereClause, whereArgs);
+	}
+
+	public void delete(String table, String whereClause, String[] whereArgs) {
+		db.delete(table, whereClause, whereArgs);
 	}
 }

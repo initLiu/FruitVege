@@ -45,13 +45,19 @@ public class DBManager {
 		return db.insert(table, values);
 	}
 
-	public long update(String table, ContentValues values, String whereClause,
-			String[] whereArgs) {
+	public long update(String table, ContentValues values, String whereClause, String[] whereArgs) {
 		Log.e(TAG, "update");
 		if (db == null) {
 			db = dbHelper.getWritableDatabase();
 		}
 		return db.update(table, values, whereClause, whereArgs);
+	}
+
+	public void delete(String table, String whereClause, String[] whereArgs) {
+		if (db == null) {
+			db = dbHelper.getWritableDatabase();
+		}
+		db.delete(table, whereClause, whereArgs);
 	}
 
 	public Cursor rawQuery(String sql, String[] selectionArgs) {
@@ -61,13 +67,11 @@ public class DBManager {
 		return db.rawQuery(sql, selectionArgs);
 	}
 
-	public Cursor query(String table, String[] columns, String selection,
-			String[] selectionArgs, String groupBy, String having,
-			String orderBy) {
+	public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy,
+			String having, String orderBy) {
 		if (db == null) {
 			db = dbHelper.getWritableDatabase();
 		}
-		return db.query(table, columns, selection, selectionArgs, groupBy,
-				having, orderBy);
+		return db.query(table, columns, selection, selectionArgs, groupBy, having, orderBy);
 	}
 }

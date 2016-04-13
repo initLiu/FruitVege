@@ -6,6 +6,7 @@
     <string name="btn_register">注册</string>
     <string name="action_exit">退出</string>
     <string name="action_add">添加商品</string>
+    <string name="action_manage">管理商品</string>
     <string name="passworType">abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&amp;*()_-=+[{]}\|;:\'\",&gt;&lt;./?</string>
     <string name="title_back">返回</string>
     <string name="uin_hint">请输入手机号</string>

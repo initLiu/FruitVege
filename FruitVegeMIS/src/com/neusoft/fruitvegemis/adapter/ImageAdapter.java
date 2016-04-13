@@ -3,6 +3,10 @@ package com.neusoft.fruitvegemis.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.neusoft.fruitvegemis.R;
+import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
+import com.neusoft.fruitvegemis.utils.UIUtils;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.neusoft.fruitvegemis.R;
-import com.neusoft.fruitvegemis.datapool.SGoodsRecord;
-import com.neusoft.fruitvegemis.utils.UIUtils;
 
 public class ImageAdapter extends BaseAdapter {
 
@@ -52,11 +52,17 @@ public class ImageAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void deleteItem(int position) {
+		goodsList.remove(position);
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			convertView = LayoutInflater.from(mContext).inflate(
-					R.layout.item_goods, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.item_goods, null);
+			SGoodsItemHolder holder = new SGoodsItemHolder();
+			convertView.setTag(holder);
 		}
 		if (mClickListener != null) {
 			convertView.setOnClickListener(mClickListener);
@@ -64,9 +70,11 @@ public class ImageAdapter extends BaseAdapter {
 		ImageView pic = (ImageView) convertView.findViewById(R.id.item_pict);
 		TextView gname = (TextView) convertView.findViewById(R.id.item_name);
 		TextView gprice = (TextView) convertView.findViewById(R.id.item_price);
+
 		SGoodsRecord record = goodsList.get(position);
 
-		SGoodsItemHolder holder = new SGoodsItemHolder();
+		SGoodsItemHolder holder = (SGoodsItemHolder) convertView.getTag();
+
 		holder.gname = record.gname;
 		holder.gprice = record.gprice;
 		holder.sname = record.sname;
@@ -74,8 +82,7 @@ public class ImageAdapter extends BaseAdapter {
 		holder.position = position;
 		convertView.setTag(holder);
 
-		pic.setImageBitmap(UIUtils.decodeSampledBitmapFromByte(holder.gpicture,
-				100, 100));
+		pic.setImageBitmap(UIUtils.decodeSampledBitmapFromByte(holder.gpicture, 100, 100));
 		gname.setText(holder.gname);
 		gprice.setText(holder.gprice + "");
 		return convertView;
@@ -110,5 +117,4 @@ public class ImageAdapter extends BaseAdapter {
 		public byte[] gpicture;
 		public int position;
 	}
-
 }
